@@ -5,6 +5,8 @@ import NextButton from 'dashboard/components-next/button/Button.vue';
 import MessageList from './MessageList.vue';
 import CaptainAssistant from 'dashboard/api/captain/assistant';
 
+const PLAYGROUND_AGENT_ID = 'DTgfblea2UX_2pPHmnt8IplA2yg';
+
 const { assistantId } = defineProps({
   assistantId: {
     type: Number,
@@ -16,6 +18,7 @@ const { t } = useI18n();
 const messages = ref([]);
 const newMessage = ref('');
 const isLoading = ref(false);
+const playgroundConversationId = ref(crypto.randomUUID());
 
 const formatMessagesForApi = () => {
   return messages.value.map(message => {
@@ -35,6 +38,7 @@ const formatMessagesForApi = () => {
 const resetConversation = () => {
   messages.value = [];
   newMessage.value = '';
+  playgroundConversationId.value = crypto.randomUUID();
 };
 
 // Watch for assistant ID changes and reset conversation
@@ -50,6 +54,7 @@ watch(
 const sendMessage = async () => {
   if (!newMessage.value.trim() || isLoading.value) return;
 
+  const promptMessageId = crypto.randomUUID();
   const userMessage = {
     content: newMessage.value,
     sender: 'user',
@@ -59,6 +64,15 @@ const sendMessage = async () => {
   const currentMessage = newMessage.value;
   newMessage.value = '';
 
+  if (window.pendo) {
+    window.pendo.trackAgent('prompt', {
+      agentId: PLAYGROUND_AGENT_ID,
+      conversationId: playgroundConversationId.value,
+      messageId: promptMessageId,
+      content: currentMessage,
+    });
+  }
+
   try {
     isLoading.value = true;
     const { data } = await CaptainAssistant.playground({
@@ -67,12 +81,22 @@ const sendMessage = async () => {
       messageHistory: formatMessagesForApi(),
     });
 
+    const responseMessageId = crypto.randomUUID();
     messages.value.push({
       content: data.response,
       sender: 'assistant',
       agentName: data.agent_name,
       timestamp: new Date().toISOString(),
     });
+
+    if (window.pendo) {
+      window.pendo.trackAgent('agent_response', {
+        agentId: PLAYGROUND_AGENT_ID,
+        conversationId: playgroundConversationId.value,
+        messageId: responseMessageId,
+        content: data.response || '',
+      });
+    }
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Error getting assistant response:', error);

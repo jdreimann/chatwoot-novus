@@ -10,6 +10,8 @@ import MessageFormatter from 'shared/helpers/MessageFormatter.js';
 
 import Button from 'dashboard/components-next/button/Button.vue';
 
+const COPILOT_AGENT_ID = 'esPJsZpvwAx86ngoSuVryITo5do';
+
 const props = defineProps({
   isLastMessage: {
     type: Boolean,
@@ -52,6 +54,15 @@ const useCopilotResponse = () => {
     emitter.emit(BUS_EVENTS.INSERT_INTO_NORMAL_EDITOR, props.message?.content);
   }
   useTrack(COPILOT_EVENTS.USE_CAPTAIN_RESPONSE);
+
+  if (window.pendo) {
+    window.pendo.trackAgent('user_reaction', {
+      agentId: COPILOT_AGENT_ID,
+      conversationId: String(props.message?.copilot_thread?.id || ''),
+      messageId: String(props.message?.id || `reaction_${Date.now()}`),
+      content: 'positive',
+    });
+  }
 };
 </script>
 
