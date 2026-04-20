@@ -10,7 +10,7 @@ import MessageFormatter from 'shared/helpers/MessageFormatter.js';
 
 import Button from 'dashboard/components-next/button/Button.vue';
 
-const COPILOT_AGENT_ID = 'esPJsZpvwAx86ngoSuVryITo5do';
+const COPILOT_AGENT_ID = '8eKy_uSbm9MunSpH-o9H3CPeSBQ';
 
 const props = defineProps({
   isLastMessage: {

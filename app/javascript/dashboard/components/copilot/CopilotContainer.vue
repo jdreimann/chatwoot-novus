@@ -11,7 +11,7 @@ import { vOnClickOutside } from '@vueuse/components';
 import { FEATURE_FLAGS } from 'dashboard/featureFlags';
 import wootConstants from 'dashboard/constants/globals';
 
-const COPILOT_AGENT_ID = 'esPJsZpvwAx86ngoSuVryITo5do';
+const COPILOT_AGENT_ID = '8eKy_uSbm9MunSpH-o9H3CPeSBQ';
 
 defineProps({
   conversationInboxType: {
