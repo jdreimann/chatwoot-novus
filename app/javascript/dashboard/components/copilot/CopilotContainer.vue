@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useAlert } from 'dashboard/composables';
 import { useStore } from 'dashboard/composables/store';
 import Copilot from 'dashboard/components-next/copilot/Copilot.vue';
@@ -10,6 +10,8 @@ import { useWindowSize } from '@vueuse/core';
 import { vOnClickOutside } from '@vueuse/components';
 import { FEATURE_FLAGS } from 'dashboard/featureFlags';
 import wootConstants from 'dashboard/constants/globals';
+
+const COPILOT_AGENT_ID = 'esPJsZpvwAx86ngoSuVryITo5do';
 
 defineProps({
   conversationInboxType: {
@@ -101,6 +103,20 @@ const handleReset = () => {
 };
 
 const sendMessage = async message => {
+  const promptMessageId = crypto.randomUUID();
+  const conversationId = String(
+    selectedCopilotThreadId.value || currentChat.value?.id || ''
+  );
+
+  if (window.pendo) {
+    window.pendo.trackAgent('prompt', {
+      agentId: COPILOT_AGENT_ID,
+      conversationId,
+      messageId: promptMessageId,
+      content: message,
+    });
+  }
+
   try {
     if (selectedCopilotThreadId.value) {
       await store.dispatch('copilotMessages/create', {
@@ -121,6 +137,34 @@ const sendMessage = async message => {
     useAlert(error.message);
   }
 };
+
+// Track agent responses when new assistant messages arrive
+const trackedMessageIds = ref(new Set());
+watch(
+  messages,
+  newMessages => {
+    newMessages.forEach(msg => {
+      if (
+        msg.message_type === 'assistant' &&
+        msg.id &&
+        !trackedMessageIds.value.has(msg.id)
+      ) {
+        trackedMessageIds.value.add(msg.id);
+        if (window.pendo) {
+          window.pendo.trackAgent('agent_response', {
+            agentId: COPILOT_AGENT_ID,
+            conversationId: String(
+              selectedCopilotThreadId.value || currentChat.value?.id || ''
+            ),
+            messageId: String(msg.id),
+            content: msg.message?.content || '',
+          });
+        }
+      }
+    });
+  },
+  { deep: true }
+);
 
 onMounted(() => {
   if (isEnterprise) {
