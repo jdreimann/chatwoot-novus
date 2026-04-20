@@ -7,6 +7,50 @@ import AnalyticsHelper from './AnalyticsHelper';
 import DashboardAudioNotificationHelper from './AudioAlerts/DashboardAudioNotificationHelper';
 import { emitter } from 'shared/helpers/mitt';
 
+export const initializePendoEvents = () => {
+  emitter.on(ANALYTICS_IDENTITY, ({ user }) => {
+    if (!window.pendo) return;
+
+    const { accounts = [] } = user;
+    const currentAccount = accounts.find(
+      account => account.id === user.account_id
+    ) || {};
+
+    pendo.initialize({
+      visitor: {
+        id: user.id,
+        email: user.email,
+        full_name: user.name,
+        displayName: user.display_name,
+        provider: user.provider,
+        availability: currentAccount.availability,
+        signInCount: user.sign_in_count,
+        currentSignInAt: user.current_sign_in_at,
+        lastSignInAt: user.last_sign_in_at,
+        confirmedAt: user.confirmed_at,
+        createdAt: user.created_at,
+        otpRequiredForLogin: user.otp_required_for_login,
+        accountId: user.account_id,
+        role: currentAccount.role,
+        accountAvailability: currentAccount.availability_status,
+        autoOffline: currentAccount.auto_offline,
+        activeAt: currentAccount.active_at,
+      },
+      account: {
+        id: currentAccount.id,
+        name: currentAccount.name,
+        locale: currentAccount.locale,
+        domain: currentAccount.domain,
+        supportEmail: currentAccount.support_email,
+        featureFlags: currentAccount.feature_flags,
+        autoResolveDuration: currentAccount.auto_resolve_duration,
+        status: currentAccount.status,
+        createdAt: currentAccount.created_at,
+      },
+    });
+  });
+};
+
 export const initializeAnalyticsEvents = () => {
   AnalyticsHelper.init();
   emitter.on(ANALYTICS_IDENTITY, ({ user }) => {
