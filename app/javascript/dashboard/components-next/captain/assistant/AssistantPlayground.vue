@@ -5,7 +5,7 @@ import NextButton from 'dashboard/components-next/button/Button.vue';
 import MessageList from './MessageList.vue';
 import CaptainAssistant from 'dashboard/api/captain/assistant';
 
-const PLAYGROUND_AGENT_ID = 'DTgfblea2UX_2pPHmnt8IplA2yg';
+const PLAYGROUND_AGENT_ID = 'fTK4_mAr3-cX4RPCpmX2Q3lKXuk';
 
 const { assistantId } = defineProps({
   assistantId: {
