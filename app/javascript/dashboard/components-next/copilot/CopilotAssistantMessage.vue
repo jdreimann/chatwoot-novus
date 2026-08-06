@@ -10,8 +10,6 @@ import MessageFormatter from 'shared/helpers/MessageFormatter.js';
 
 import Button from 'dashboard/components-next/button/Button.vue';
 
-const COPILOT_AGENT_ID = 'esPJsZpvwAx86ngoSuVryITo5do';
-
 const props = defineProps({
   isLastMessage: {
     type: Boolean,
@@ -26,6 +24,9 @@ const props = defineProps({
     required: true,
   },
 });
+
+const COPILOT_AGENT_ID = 'qpMNodsjBYzDlYA8IMdFCA5nPIU';
+
 const hasEmptyMessageContent = computed(() => !props.message?.content);
 
 const showUseButton = computed(() => {

@@ -5,14 +5,14 @@ import NextButton from 'dashboard/components-next/button/Button.vue';
 import MessageList from './MessageList.vue';
 import CaptainAssistant from 'dashboard/api/captain/assistant';
 
-const PLAYGROUND_AGENT_ID = 'DTgfblea2UX_2pPHmnt8IplA2yg';
-
 const { assistantId } = defineProps({
   assistantId: {
     type: Number,
     required: true,
   },
 });
+
+const PLAYGROUND_AGENT_ID = 't28H05zFp44837RcBFuLjmwNS84';
 
 const { t } = useI18n();
 const messages = ref([]);

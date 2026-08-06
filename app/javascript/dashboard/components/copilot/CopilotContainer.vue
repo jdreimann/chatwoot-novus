@@ -11,14 +11,14 @@ import { vOnClickOutside } from '@vueuse/components';
 import { FEATURE_FLAGS } from 'dashboard/featureFlags';
 import wootConstants from 'dashboard/constants/globals';
 
-const COPILOT_AGENT_ID = 'esPJsZpvwAx86ngoSuVryITo5do';
-
 defineProps({
   conversationInboxType: {
     type: String,
     default: '',
   },
 });
+
+const COPILOT_AGENT_ID = 'qpMNodsjBYzDlYA8IMdFCA5nPIU';
 
 const store = useStore();
 const { uiSettings, updateUISettings } = useUISettings();
