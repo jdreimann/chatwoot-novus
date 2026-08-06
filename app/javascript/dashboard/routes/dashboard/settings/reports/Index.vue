@@ -101,6 +101,15 @@ export default {
         filterValue: { from, to, groupBy, businessHours },
         reportType: 'conversations',
       });
+      if (window.pendo) {
+        window.pendo.track('report_filtered', {
+          reportType: 'conversations',
+          dateFrom: String(from),
+          dateTo: String(to),
+          groupBy: groupBy?.period || '',
+          businessHours,
+        });
+      }
     },
   },
 };

@@ -27,6 +27,11 @@ const onSubmit = async webhook => {
   try {
     const result = await store.dispatch('webhooks/create', { webhook });
     createdWebhook.value = result;
+    if (window.pendo) {
+      window.pendo.track('webhook_created', {
+        webhookUrl: String(webhook.url || ''),
+      });
+    }
   } catch (error) {
     const message =
       error.response.data.message ||

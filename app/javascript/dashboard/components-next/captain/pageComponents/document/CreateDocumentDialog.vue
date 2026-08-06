@@ -27,6 +27,11 @@ const handleSubmit = async newDocument => {
   try {
     await store.dispatch('captainDocuments/create', newDocument);
     useAlert(t(`${i18nKey}.SUCCESS_MESSAGE`));
+    if (window.pendo) {
+      window.pendo.track('captain_document_created', {
+        assistantId: String(newDocument.assistant_id || ''),
+      });
+    }
     dialogRef.value.close();
   } catch (error) {
     const errorMessage =

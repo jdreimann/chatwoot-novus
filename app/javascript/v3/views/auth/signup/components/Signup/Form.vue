@@ -77,6 +77,11 @@ const performRegistration = async () => {
   isSignupInProgress.value = true;
   try {
     await register(credentials);
+    if (window.pendo) {
+      window.pendo.track('user_signup', {
+        hasHCaptcha: Boolean(globalConfig.value.hCaptchaSiteKey),
+      });
+    }
     router.push({
       name: 'auth_verify_email',
       state: { email: credentials.email },

@@ -78,6 +78,12 @@ export default {
         useTrack(CONTACTS_EVENTS.SAVE_FILTER, {
           type: this.filterType === 0 ? 'folder' : 'segment',
         });
+        if (window.pendo) {
+          window.pendo.track('custom_view_saved', {
+            filterType: this.filterType === 0 ? 'folder' : 'segment',
+            viewName: this.name,
+          });
+        }
       } catch (error) {
         const errorMessage = error?.message;
         this.alertMessage =

@@ -15,6 +15,11 @@ export default {
       try {
         await this.$store.dispatch('sla/create', payload);
         useAlert(this.$t('SLA.ADD.API.SUCCESS_MESSAGE'));
+        if (window.pendo) {
+          window.pendo.track('sla_created', {
+            slaName: String(payload.name || ''),
+          });
+        }
         this.onClose();
       } catch (error) {
         const errorMessage =

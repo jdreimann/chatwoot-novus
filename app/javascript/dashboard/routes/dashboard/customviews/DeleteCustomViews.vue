@@ -79,6 +79,11 @@ export default {
         useTrack(CONTACTS_EVENTS.DELETE_FILTER, {
           type: this.filterType === 0 ? 'folder' : 'segment',
         });
+        if (window.pendo) {
+          window.pendo.track('custom_view_deleted', {
+            filterType: this.activeFilterType === 0 ? 'folder' : 'segment',
+          });
+        }
       } catch (error) {
         const errorMessage =
           error?.response?.message || this.activeFilterType === 0

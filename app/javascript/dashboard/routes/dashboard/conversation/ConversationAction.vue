@@ -139,6 +139,13 @@ export default {
               newValue: priority,
               from: 'Conversation Sidebar',
             });
+            if (window.pendo) {
+              window.pendo.track('conversation_priority_changed', {
+                newValue: priority,
+                from: 'Conversation Sidebar',
+                conversationId: String(conversationId),
+              });
+            }
             useAlert(
               this.$t('CONVERSATION.PRIORITY.CHANGE_PRIORITY.SUCCESSFUL', {
                 priority: priorityItem.name,

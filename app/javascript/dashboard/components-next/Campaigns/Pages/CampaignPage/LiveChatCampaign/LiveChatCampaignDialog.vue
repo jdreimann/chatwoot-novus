@@ -20,6 +20,11 @@ const addCampaign = async campaignDetails => {
     useTrack(CAMPAIGNS_EVENTS.CREATE_CAMPAIGN, {
       type: CAMPAIGN_TYPES.ONGOING,
     });
+    if (window.pendo) {
+      window.pendo.track('campaign_created', {
+        campaignType: CAMPAIGN_TYPES.ONGOING,
+      });
+    }
 
     useAlert(t('CAMPAIGN.LIVE_CHAT.CREATE.FORM.API.SUCCESS_MESSAGE'));
   } catch (error) {

@@ -196,6 +196,14 @@ const downloadReports = () => {
       businessHours: businessHours.value,
     };
     store.dispatch(dispatchMethods[props.type], params);
+    if (window.pendo) {
+      window.pendo.track('report_downloaded', {
+        reportType: props.type,
+        dateFrom: String(from.value),
+        dateTo: String(to.value),
+        businessHours: businessHours.value,
+      });
+    }
   }
 };
 

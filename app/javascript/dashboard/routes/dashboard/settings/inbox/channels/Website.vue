@@ -57,6 +57,12 @@ export default {
             },
           }
         );
+        if (window.pendo) {
+          window.pendo.track('inbox_created', {
+            channelType: 'web_widget',
+            greetingEnabled: this.greetingEnabled,
+          });
+        }
         router.replace({
           name: 'settings_inboxes_add_agents',
           params: {

@@ -54,6 +54,12 @@ const createNewArticle = async ({ title, content }) => {
     });
 
     useTrack(PORTALS_EVENTS.CREATE_ARTICLE, { locale });
+    if (window.pendo) {
+      window.pendo.track('article_created', {
+        locale,
+        portalSlug,
+      });
+    }
 
     router.replace({
       name: 'portals_articles_edit',

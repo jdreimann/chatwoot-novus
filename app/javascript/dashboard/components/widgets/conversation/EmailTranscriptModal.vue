@@ -83,6 +83,12 @@ export default {
           conversationId: this.currentChat.id,
         });
         useAlert(this.$t('EMAIL_TRANSCRIPT.SEND_EMAIL_SUCCESS'));
+        if (window.pendo) {
+          window.pendo.track('email_transcript_sent', {
+            recipientType: this.selectedType,
+            conversationId: String(this.currentChat.id),
+          });
+        }
         this.onCancel();
       } catch (error) {
         const status = error?.response?.status;

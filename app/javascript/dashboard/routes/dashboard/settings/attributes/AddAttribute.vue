@@ -157,6 +157,13 @@ export default {
           regex_cue: this.regexCue,
         });
         this.alertMessage = this.$t('ATTRIBUTES_MGMT.ADD.API.SUCCESS_MESSAGE');
+        if (window.pendo) {
+          window.pendo.track('custom_attribute_created', {
+            attributeModel: String(this.attributeModel),
+            attributeType: String(this.attributeType),
+            hasRegex: Boolean(this.regexPattern),
+          });
+        }
         this.onClose();
       } catch (error) {
         const errorMessage = error?.message;

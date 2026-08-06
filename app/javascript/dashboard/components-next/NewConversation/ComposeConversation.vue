@@ -179,6 +179,13 @@ const createConversation = async ({ payload, isFromWhatsApp }) => {
     };
     discardCompose();
     useAlert(t('COMPOSE_NEW_CONVERSATION.FORM.SUCCESS_MESSAGE'), action);
+    if (window.pendo) {
+      window.pendo.track('conversation_created', {
+        conversationId: String(data.id),
+        isFromWhatsApp,
+        contactId: String(payload.contact_id || ''),
+      });
+    }
     return true; // Return success
   } catch (error) {
     useAlert(

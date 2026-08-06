@@ -41,6 +41,11 @@ const createAssistant = async assistantDetails => {
       'captainAssistants/create',
       assistantDetails
     );
+    if (window.pendo) {
+      window.pendo.track('captain_assistant_created', {
+        assistantName: String(assistantDetails.name || ''),
+      });
+    }
     emit('created', newAssistant);
   } catch (error) {
     const errorMessage = error?.message || t(`${i18nKey.value}.ERROR_MESSAGE`);

@@ -96,6 +96,12 @@ const onCreate = async () => {
       totalLocales: updatedLocales.length,
       from: route.name,
     });
+    if (window.pendo) {
+      window.pendo.track('locale_created', {
+        locale: selectedLocale.value,
+        portalSlug: props.portal?.slug || '',
+      });
+    }
 
     resetForm();
     dialogRef.value?.close();

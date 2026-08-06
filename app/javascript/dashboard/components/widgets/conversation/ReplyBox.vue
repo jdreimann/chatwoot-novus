@@ -838,6 +838,25 @@ export default {
             normalizedAcceptedMessage !== normalizedEditorMessage,
           isPrivate,
         });
+        if (window.pendo) {
+          window.pendo.track('ai_assisted_message_sent', {
+            conversationId: String(this.conversationIdByRoute),
+            channelType: this.channelType,
+            editedBeforeSend:
+              normalizedAcceptedMessage !== normalizedEditorMessage,
+            isPrivate,
+          });
+        }
+      }
+
+      if (window.pendo) {
+        window.pendo.track('message_sent', {
+          channelType: this.channelType,
+          signatureEnabled: this.sendWithSignature,
+          hasReplyTo: !!this.inReplyTo?.id,
+          isPrivate,
+          conversationId: String(this.conversationIdByRoute),
+        });
       }
 
       // Analytics data for message signature is enabled or not in channels

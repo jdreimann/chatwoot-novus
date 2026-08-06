@@ -197,6 +197,11 @@ const createIssue = async () => {
     );
     useAlert(t('INTEGRATION_SETTINGS.LINEAR.ADD_OR_LINK.CREATE_SUCCESS'));
     useTrack(LINEAR_EVENTS.CREATE_ISSUE);
+    if (window.pendo) {
+      window.pendo.track('linear_issue_created', {
+        conversationId: String(props.conversationId),
+      });
+    }
     onClose();
   } catch (error) {
     const errorMessage = parseLinearAPIErrorResponse(

@@ -96,6 +96,9 @@ const completeMfaSetup = () => {
   backupCodesGenerated.value = true;
   showSetup.value = false;
   useAlert(t('MFA_SETTINGS.SETUP.SUCCESS'));
+  if (window.pendo) {
+    window.pendo.track('mfa_enabled', {});
+  }
 };
 
 // Cancel setup
@@ -111,6 +114,9 @@ const disableMfa = async ({ password, otpCode }) => {
     backupCodesGenerated.value = false;
     managementActionsRef.value?.resetDisableForm();
     useAlert(t('MFA_SETTINGS.DISABLE.SUCCESS'));
+    if (window.pendo) {
+      window.pendo.track('mfa_disabled', {});
+    }
   } catch (error) {
     useAlert(t('MFA_SETTINGS.DISABLE.ERROR'));
   }

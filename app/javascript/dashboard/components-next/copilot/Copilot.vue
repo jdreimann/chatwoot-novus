@@ -40,6 +40,9 @@ const { t } = useI18n();
 const sendMessage = message => {
   emit('sendMessage', message);
   useTrack(COPILOT_EVENTS.SEND_MESSAGE);
+  if (window.pendo) {
+    window.pendo.track('copilot_message_sent', {});
+  }
 };
 
 const chatContainer = ref(null);

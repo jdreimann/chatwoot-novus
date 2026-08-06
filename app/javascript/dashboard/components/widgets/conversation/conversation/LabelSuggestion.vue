@@ -147,6 +147,16 @@ export default {
       };
 
       useTrack(event, payload);
+      if (window.pendo && event === CAPTAIN_EVENTS.LABEL_SUGGESTION_APPLIED) {
+        const applied = this.selectedLabels.length
+          ? this.selectedLabels
+          : this.suggestedLabels;
+        window.pendo.track('captain_label_suggestion_applied', {
+          conversationId: String(this.conversationId),
+          suggestions: this.suggestedLabels.join(',').substring(0, 200),
+          labelsApplied: applied.join(',').substring(0, 200),
+        });
+      }
     },
   },
 };

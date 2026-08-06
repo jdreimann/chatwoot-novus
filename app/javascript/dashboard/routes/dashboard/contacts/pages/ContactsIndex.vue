@@ -342,6 +342,13 @@ const assignLabels = async labels => {
       labels: { add: labels },
     });
     useAlert(t('CONTACTS_BULK_ACTIONS.ASSIGN_LABELS_SUCCESS'));
+    if (window.pendo) {
+      window.pendo.track('contacts_bulk_labels_assigned', {
+        contactCount: selectedContactIds.value.length,
+        labelCount: labels.length,
+        labels: labels.join(',').substring(0, 200),
+      });
+    }
     clearSelection();
     await fetchContactsBasedOnContext(pageNumber.value);
   } catch (error) {
@@ -364,6 +371,11 @@ const deleteContacts = async () => {
       action_name: 'delete',
     });
     useAlert(t('CONTACTS_BULK_ACTIONS.DELETE_SUCCESS'));
+    if (window.pendo) {
+      window.pendo.track('contacts_bulk_deleted', {
+        contactCount: selectedContactIds.value.length,
+      });
+    }
     clearSelection();
     await fetchContactsBasedOnContext(pageNumber.value);
     bulkDeleteDialogRef.value?.close?.();

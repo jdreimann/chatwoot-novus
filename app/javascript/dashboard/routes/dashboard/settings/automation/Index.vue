@@ -125,6 +125,14 @@ const submitAutomation = async (payload, mode) => {
         : t('AUTOMATION.ADD.API.SUCCESS_MESSAGE');
     await store.dispatch(action, payload);
     useAlert(successMessage);
+    if (window.pendo) {
+      window.pendo.track('automation_created', {
+        eventName: payload.event_name || '',
+        conditionsCount: payload.conditions?.length || 0,
+        actionsCount: payload.actions?.length || 0,
+        mode,
+      });
+    }
     hideAddPopup();
     hideEditPopup();
   } catch (error) {
@@ -161,6 +169,12 @@ const toggleAutomation = async ({ id, name, status }) => {
         id: id,
         active: !status,
       });
+      if (window.pendo) {
+        window.pendo.track('automation_toggled', {
+          automationId: String(id),
+          newStatus: !status,
+        });
+      }
       const message = status
         ? t('AUTOMATION.TOGGLE.DEACTIVATION_SUCCESFUL')
         : t('AUTOMATION.TOGGLE.ACTIVATION_SUCCESFUL');

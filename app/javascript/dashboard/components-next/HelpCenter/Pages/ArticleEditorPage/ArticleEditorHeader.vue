@@ -106,6 +106,12 @@ const updateArticleStatus = async ({ value }) => {
       useTrack(PORTALS_EVENTS.ARCHIVE_ARTICLE, { uiFrom: 'header' });
     } else if (status === ARTICLE_STATUS_TYPES.PUBLISH) {
       useTrack(PORTALS_EVENTS.PUBLISH_ARTICLE);
+      if (window.pendo) {
+        window.pendo.track('article_published', {
+          articleId: String(props.articleId),
+          portalSlug: route.params.portalSlug || '',
+        });
+      }
     }
     isArticlePublishing.value = false;
   } catch (error) {

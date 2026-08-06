@@ -87,6 +87,12 @@ const onCreate = async contact => {
     useAlert(
       t('CONTACTS_LAYOUT.HEADER.ACTIONS.CONTACT_CREATION.SUCCESS_MESSAGE')
     );
+    if (window.pendo) {
+      window.pendo.track('contact_created', {
+        hasEmail: Boolean(contact.email),
+        hasPhoneNumber: Boolean(contact.phone_number),
+      });
+    }
   } catch (error) {
     const i18nPrefix = 'CONTACTS_LAYOUT.HEADER.ACTIONS.CONTACT_CREATION';
     if (error instanceof DuplicateContactException) {
@@ -111,12 +117,23 @@ const onImport = async file => {
       t('CONTACTS_LAYOUT.HEADER.ACTIONS.IMPORT_CONTACT.SUCCESS_MESSAGE')
     );
     useTrack(CONTACTS_EVENTS.IMPORT_SUCCESS);
+    if (window.pendo) {
+      window.pendo.track('contacts_imported', { status: 'success' });
+    }
   } catch (error) {
     useAlert(
       error.message ??
         t('CONTACTS_LAYOUT.HEADER.ACTIONS.IMPORT_CONTACT.ERROR_MESSAGE')
     );
     useTrack(CONTACTS_EVENTS.IMPORT_FAILURE);
+    if (window.pendo) {
+      window.pendo.track('contacts_import_failed', {
+        errorMessage: String(
+          error.message ||
+            t('CONTACTS_LAYOUT.HEADER.ACTIONS.IMPORT_CONTACT.ERROR_MESSAGE')
+        ).substring(0, 100),
+      });
+    }
   }
 };
 
@@ -126,6 +143,11 @@ const onExport = async query => {
     useAlert(
       t('CONTACTS_LAYOUT.HEADER.ACTIONS.EXPORT_CONTACT.SUCCESS_MESSAGE')
     );
+    if (window.pendo) {
+      window.pendo.track('contacts_exported', {
+        hasFilterQuery: Boolean(query),
+      });
+    }
   } catch (error) {
     useAlert(
       error.message ||
@@ -145,6 +167,11 @@ const onCreateSegment = async payload => {
     useAlert(
       t('CONTACTS_LAYOUT.HEADER.ACTIONS.FILTERS.CREATE_SEGMENT.SUCCESS_MESSAGE')
     );
+    if (window.pendo) {
+      window.pendo.track('segment_created', {
+        segmentName: String(payload.name || ''),
+      });
+    }
     const segmentId = response?.data?.id;
     if (!segmentId) return;
     // Navigate to the created segment
@@ -176,6 +203,11 @@ const onDeleteSegment = async payload => {
     useAlert(
       t('CONTACTS_LAYOUT.HEADER.ACTIONS.FILTERS.DELETE_SEGMENT.SUCCESS_MESSAGE')
     );
+    if (window.pendo) {
+      window.pendo.track('segment_deleted', {
+        segmentId: String(props.segmentsId),
+      });
+    }
   } catch (error) {
     useAlert(
       t('CONTACTS_LAYOUT.HEADER.ACTIONS.FILTERS.DELETE_SEGMENT.ERROR_MESSAGE')

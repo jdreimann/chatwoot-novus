@@ -21,6 +21,11 @@ export default {
           ...data,
         });
 
+        if (window.pendo) {
+          window.pendo.track('team_created', {
+            teamName: String(data.name || ''),
+          });
+        }
         router.replace({
           name: 'settings_teams_add_agents',
           params: {

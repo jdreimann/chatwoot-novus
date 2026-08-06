@@ -56,6 +56,12 @@ export default {
           show_on_sidebar: this.showOnSidebar,
         });
         useAlert(this.$t('LABEL_MGMT.ADD.API.SUCCESS_MESSAGE'));
+        if (window.pendo) {
+          window.pendo.track('label_created', {
+            showOnSidebar: this.showOnSidebar,
+            hasDescription: Boolean(this.description),
+          });
+        }
         this.onClose();
       } catch (error) {
         const errorMessage =

@@ -89,6 +89,11 @@ const linkIssue = async () => {
     issues.value = [];
     onClose();
     useTrack(LINEAR_EVENTS.LINK_ISSUE);
+    if (window.pendo) {
+      window.pendo.track('linear_issue_linked', {
+        conversationId: String(props.conversationId),
+      });
+    }
   } catch (error) {
     const errorMessage = parseLinearAPIErrorResponse(
       error,

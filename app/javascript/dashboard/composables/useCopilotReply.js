@@ -68,6 +68,15 @@ function trackGenerationFailure({
     stage,
     reason,
   });
+  if (window.pendo) {
+    window.pendo.track('captain_generation_failed', {
+      action,
+      conversationId: String(conversationId),
+      stage,
+      reason,
+      followUpCount: followUpCount !== undefined ? followUpCount : 0,
+    });
+  }
 }
 
 /**
@@ -118,6 +127,19 @@ export function useCopilotReply() {
           followUpCount.value
         )
       );
+      if (window.pendo) {
+        const pendoEvent =
+          currentAction.value === 'reply_suggestion'
+            ? 'captain_reply_suggestion_dismissed'
+            : 'captain_rewrite_dismissed';
+        window.pendo.track(pendoEvent, {
+          conversationId: String(trackedConversationId.value),
+          followUpCount: followUpCount.value,
+          ...(REWRITE_ACTIONS.includes(currentAction.value)
+            ? { operation: currentAction.value }
+            : {}),
+        });
+      }
     }
 
     if (abortController.value) {
@@ -199,6 +221,16 @@ export function useCopilotReply() {
           CAPTAIN_EVENTS[eventKey],
           buildPayload(action, trackedConversationId.value)
         );
+        const pendoEvent =
+          action === 'reply_suggestion'
+            ? 'captain_reply_suggestion_used'
+            : 'captain_rewrite_used';
+        if (window.pendo) {
+          window.pendo.track(pendoEvent, {
+            conversationId: String(trackedConversationId.value),
+            ...(REWRITE_ACTIONS.includes(action) ? { operation: action } : {}),
+          });
+        }
       } else if (errorType && errorType !== CAPTAIN_ERROR_TYPES.ABORTED) {
         trackGenerationFailure({
           action,
@@ -339,6 +371,19 @@ export function useCopilotReply() {
           followUpCount.value
         )
       );
+      if (window.pendo) {
+        const pendoEvent =
+          currentAction.value === 'reply_suggestion'
+            ? 'captain_reply_suggestion_applied'
+            : 'captain_rewrite_applied';
+        window.pendo.track(pendoEvent, {
+          conversationId: String(trackedConversationId.value),
+          followUpCount: followUpCount.value,
+          ...(REWRITE_ACTIONS.includes(currentAction.value)
+            ? { operation: currentAction.value }
+            : {}),
+        });
+      }
     }
 
     // Reset state without tracking dismiss

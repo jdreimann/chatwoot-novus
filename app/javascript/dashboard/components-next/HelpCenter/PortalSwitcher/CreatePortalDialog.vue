@@ -83,6 +83,12 @@ const createPortal = async portal => {
     };
     useTrack(PORTALS_EVENTS.ONBOARD_BASIC_INFORMATION, analyticsPayload);
     useTrack(PORTALS_EVENTS.CREATE_PORTAL, analyticsPayload);
+    if (window.pendo) {
+      window.pendo.track('portal_created', {
+        portalName: portal.name,
+        portalSlug: portal.slug,
+      });
+    }
 
     useAlert(
       t('HELP_CENTER.PORTAL_SETTINGS.API.CREATE_PORTAL.SUCCESS_MESSAGE')

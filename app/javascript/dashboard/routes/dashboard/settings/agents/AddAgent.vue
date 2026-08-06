@@ -79,6 +79,12 @@ const addAgent = async () => {
 
     await store.dispatch('agents/create', payload);
     useAlert(t('AGENT_MGMT.ADD.API.SUCCESS_MESSAGE'));
+    if (window.pendo) {
+      window.pendo.track('agent_invited', {
+        role: selectedRole.value.name,
+        isCustomRole: selectedRole.value.name.startsWith('custom_'),
+      });
+    }
     emit('close');
   } catch (error) {
     const {

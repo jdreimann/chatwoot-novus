@@ -70,6 +70,12 @@ export default {
           teamId,
           agentsList: selectedAgents,
         });
+        if (window.pendo) {
+          window.pendo.track('team_members_added', {
+            teamId: String(teamId),
+            agentCount: selectedAgents.length,
+          });
+        }
         router.replace({
           name: 'settings_teams_finish',
           params: {

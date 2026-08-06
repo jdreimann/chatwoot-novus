@@ -291,6 +291,11 @@ const onSearch = q => {
   updateURL();
   if (!q) return;
   useTrack(CONVERSATION_EVENTS.SEARCH_CONVERSATION);
+  if (window.pendo) {
+    window.pendo.track('conversation_search_executed', {
+      selectedTab: selectedTab.value,
+    });
+  }
 
   const searchPayload = buildSearchPayload({ q, page: 1 });
   store.dispatch('conversationSearch/fullSearch', searchPayload);

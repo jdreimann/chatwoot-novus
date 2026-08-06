@@ -698,6 +698,11 @@ function insertSpecialContent(type, content) {
   };
 
   useTrack(event_map[type]);
+  if (window.pendo && type === 'cannedResponse') {
+    window.pendo.track('canned_response_inserted', {
+      conversationId: String(props.conversationId || ''),
+    });
+  }
 }
 
 function handleLineBreakWhenCmdAndEnterToSendEnabled(event) {

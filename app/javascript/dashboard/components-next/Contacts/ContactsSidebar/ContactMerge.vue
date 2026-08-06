@@ -87,6 +87,14 @@ const onMergeContacts = async () => {
   if (!isFormValid) return;
 
   useTrack(CONTACTS_EVENTS.MERGED_CONTACTS);
+  if (window.pendo) {
+    window.pendo.track('contacts_merged', {
+      primaryContactId: String(state.primaryContactId),
+      mergedContactId: String(
+        props.selectedContact.id || route.params.contactId
+      ),
+    });
+  }
 
   try {
     await store.dispatch('contacts/merge', {

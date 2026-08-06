@@ -77,6 +77,11 @@ async function markAccountForDeletion() {
     // Refresh account data
     await store.dispatch('accounts/get');
     useAlert(t('GENERAL_SETTINGS.ACCOUNT_DELETE_SECTION.SUCCESS'));
+    if (window.pendo) {
+      window.pendo.track('account_deletion_requested', {
+        accountId: String(currentAccount.value.id),
+      });
+    }
   } catch (error) {
     // Handle error message
     handleDeletionError(error);
@@ -93,6 +98,11 @@ async function clearDeletionMark() {
     // Refresh account data
     await store.dispatch('accounts/get');
     useAlert(t('GENERAL_SETTINGS.UPDATE.SUCCESS'));
+    if (window.pendo) {
+      window.pendo.track('account_deletion_cancelled', {
+        accountId: String(currentAccount.value.id),
+      });
+    }
   } catch (error) {
     useAlert(t('GENERAL_SETTINGS.UPDATE.ERROR'));
   }

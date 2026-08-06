@@ -136,6 +136,13 @@ const handleCustomRole = async () => {
       useAlert(t('CUSTOM_ROLE.ADD.API.SUCCESS_MESSAGE'));
     }
 
+    if (window.pendo) {
+      window.pendo.track('custom_role_created', {
+        mode: props.mode,
+        permissionsCount: selectedPermissions.value.length,
+        permissions: selectedPermissions.value.join(',').substring(0, 200),
+      });
+    }
     resetForm();
     emit('close');
   } catch (error) {

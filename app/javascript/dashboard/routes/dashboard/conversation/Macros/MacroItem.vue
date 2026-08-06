@@ -34,6 +34,12 @@ const executeMacro = async macro => {
       conversationIds: [props.conversationId],
     });
     useTrack(CONVERSATION_EVENTS.EXECUTED_A_MACRO);
+    if (window.pendo) {
+      window.pendo.track('macro_executed', {
+        macroId: String(macro.id),
+        conversationId: String(props.conversationId),
+      });
+    }
     useAlert(t('MACROS.EXECUTE.EXECUTED_SUCCESSFULLY'));
   } catch (error) {
     useAlert(t('MACROS.ERROR'));

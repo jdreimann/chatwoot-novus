@@ -86,6 +86,12 @@ function validateAndSubmit() {
       queryOperator: filter.queryOperator,
     })),
   });
+  if (window.pendo) {
+    window.pendo.track('contacts_filter_applied', {
+      filterCount: filters.value.length,
+      filterAttributes: filters.value.map(f => f.attributeKey).join(','),
+    });
+  }
 }
 
 const filterModalHeaderTitle = computed(() => {

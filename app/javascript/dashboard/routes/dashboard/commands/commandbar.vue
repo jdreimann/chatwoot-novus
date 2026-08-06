@@ -122,6 +122,9 @@ const buildDynamicSnoozeActions = (search, parentId) => {
     handler: () => {
       emitter.emit(busEvent, parsed.resolve());
       useTrack(SNOOZE_EVENTS.NLP_SNOOZE_APPLIED, { label: parsed.label });
+      if (window.pendo) {
+        window.pendo.track('nlp_snooze_applied', { label: parsed.label });
+      }
     },
   }));
 };
@@ -166,6 +169,9 @@ const onSelected = item => {
   }
 
   useTrack(GENERAL_EVENTS.COMMAND_BAR, { section, action: title });
+  if (window.pendo) {
+    window.pendo.track('command_bar_used', { section, action: title });
+  }
   setCommandBarData();
 };
 

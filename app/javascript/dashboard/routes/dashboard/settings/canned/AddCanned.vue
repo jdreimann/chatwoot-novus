@@ -67,6 +67,11 @@ export default {
           // Reset Form, Show success message
           this.addCanned.showLoading = false;
           useAlert(this.$t('CANNED_MGMT.ADD.API.SUCCESS_MESSAGE'));
+          if (window.pendo) {
+            window.pendo.track('canned_response_created', {
+              shortCode: this.shortCode,
+            });
+          }
           this.resetForm();
           this.onClose();
         })

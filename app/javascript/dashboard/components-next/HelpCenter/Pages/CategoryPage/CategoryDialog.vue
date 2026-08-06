@@ -75,6 +75,12 @@ const handleCategory = async formData => {
         ? { hasDescription: Boolean(description) }
         : undefined
     );
+    if (window.pendo && props.mode === 'create') {
+      window.pendo.track('category_created', {
+        portalSlug: route.params.portalSlug || '',
+        hasDescription: Boolean(description),
+      });
+    }
 
     emit('close');
   } catch (error) {

@@ -120,6 +120,13 @@ const saveMacro = async macroData => {
     serializedMacro.actions = actionQueryGenerator(serializedMacro.actions);
     await store.dispatch(action, serializedMacro);
     useAlert(successMessage);
+    if (window.pendo) {
+      window.pendo.track('macro_saved', {
+        mode: mode.value,
+        actionsCount: serializedMacro.actions?.length || 0,
+        visibility: serializedMacro.visibility || '',
+      });
+    }
     router.push({ name: 'macros_wrapper' });
   } catch (error) {
     useAlert(t('MACROS.ERROR'));
