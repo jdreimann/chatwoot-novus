@@ -72,6 +72,7 @@ const openCategoryArticles = slug => {
 };
 
 const handleLocaleChange = value => {
+  useTrack(PORTALS_EVENTS.SWITCH_LOCALE, { locale: value });
   updateRoute({ locale: value }, 'portals_categories_index');
   emit('fetchCategories', value);
 };

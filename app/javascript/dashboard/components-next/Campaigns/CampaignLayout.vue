@@ -1,5 +1,7 @@
 <script setup>
 import { vOnClickOutside } from '@vueuse/components';
+import { useTrack } from 'dashboard/composables';
+import { CAMPAIGNS_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 import Button from 'dashboard/components-next/button/Button.vue';
 
 defineProps({
@@ -16,6 +18,7 @@ defineProps({
 const emit = defineEmits(['click', 'close']);
 
 const handleButtonClick = () => {
+  useTrack(CAMPAIGNS_EVENTS.OPEN_NEW_CAMPAIGN_MODAL);
   emit('click');
 };
 </script>

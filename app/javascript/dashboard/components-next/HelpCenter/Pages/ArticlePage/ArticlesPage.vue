@@ -13,7 +13,8 @@ import {
 } from 'dashboard/helper/portalHelper';
 import { hasPendingChanges } from 'dashboard/helper/articleDiffHelper';
 import { FEATURE_FLAGS } from 'dashboard/featureFlags';
-import { useAlert } from 'dashboard/composables';
+import { useAlert, useTrack } from 'dashboard/composables';
+import { PORTALS_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 import articlesAPI from 'dashboard/api/helpCenter/articles';
 
 import HelpCenterLayout from 'dashboard/components-next/HelpCenter/HelpCenterLayout.vue';
@@ -188,6 +189,7 @@ const handleCategoryAction = value =>
   updateRoute({ categorySlug: value === CATEGORY_ALL ? '' : value });
 
 const handleLocaleAction = value => {
+  useTrack(PORTALS_EVENTS.SWITCH_LOCALE, { locale: value });
   updateRoute({ locale: value, categorySlug: '' });
   emit('fetchPortal', value);
 };
