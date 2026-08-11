@@ -4,7 +4,8 @@ import { useStore, useMapGetter } from 'dashboard/composables/store';
 import { useAccount } from 'dashboard/composables/useAccount';
 import { useI18n } from 'vue-i18n';
 import { useToggle } from '@vueuse/core';
-import { useAlert } from 'dashboard/composables';
+import { useAlert, useTrack } from 'dashboard/composables';
+import { SETTINGS_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 import WootConfirmDeleteModal from 'dashboard/components/widgets/modal/ConfirmDeleteModal.vue';
 import NextButton from 'dashboard/components-next/button/Button.vue';
 import SectionLayout from './SectionLayout.vue';
@@ -74,6 +75,7 @@ async function markAccountForDeletion() {
     await store.dispatch('accounts/toggleDeletion', {
       action_type: 'delete',
     });
+    useTrack(SETTINGS_EVENTS.ACCOUNT_MARKED_FOR_DELETION);
     // Refresh account data
     await store.dispatch('accounts/get');
     useAlert(t('GENERAL_SETTINGS.ACCOUNT_DELETE_SECTION.SUCCESS'));
@@ -89,6 +91,7 @@ async function clearDeletionMark() {
     await store.dispatch('accounts/toggleDeletion', {
       action_type: 'undelete',
     });
+    useTrack(SETTINGS_EVENTS.ACCOUNT_DELETION_CANCELLED);
 
     // Refresh account data
     await store.dispatch('accounts/get');

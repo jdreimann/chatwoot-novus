@@ -2,7 +2,8 @@
 import { ref, computed } from 'vue';
 import { useStore, useMapGetter } from 'dashboard/composables/store';
 import { useI18n } from 'vue-i18n';
-import { useAlert } from 'dashboard/composables';
+import { useAlert, useTrack } from 'dashboard/composables';
+import { SETTINGS_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email } from '@vuelidate/validators';
 import Button from 'dashboard/components-next/button/Button.vue';
@@ -78,6 +79,10 @@ const addAgent = async () => {
     }
 
     await store.dispatch('agents/create', payload);
+    useTrack(SETTINGS_EVENTS.AGENT_INVITED, {
+      role: payload.role || 'custom',
+      isCustomRole: Boolean(payload.custom_role_id),
+    });
     useAlert(t('AGENT_MGMT.ADD.API.SUCCESS_MESSAGE'));
     emit('close');
   } catch (error) {

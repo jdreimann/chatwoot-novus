@@ -1,9 +1,10 @@
 import { ref, unref } from 'vue';
 import { useStore } from 'vuex';
-import { useAlert } from 'dashboard/composables';
+import { useAlert, useTrack } from 'dashboard/composables';
 import { useI18n } from 'vue-i18n';
 import { useMapGetter } from 'dashboard/composables/store.js';
 import { useConversationRequiredAttributes } from 'dashboard/composables/useConversationRequiredAttributes';
+import { BULK_ACTION_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 import wootConstants from 'dashboard/constants/globals';
 
 export function useBulkActions() {
@@ -59,12 +60,17 @@ export function useBulkActions() {
   // Same method used in context menu, conversationId being passed from there.
   async function onAssignAgent(agent, conversationId = null) {
     try {
+      const ids = conversationId || selectedConversations.value;
       await store.dispatch('bulkActions/process', {
         type: 'Conversation',
-        ids: conversationId || selectedConversations.value,
+        ids,
         fields: {
           assignee_id: agent.id,
         },
+      });
+      useTrack(BULK_ACTION_EVENTS.AGENT_ASSIGNMENT, {
+        agentId: agent.id,
+        conversationCount: Array.isArray(ids) ? ids.length : 1,
       });
       store.dispatch('bulkActions/clearSelectedConversationIds');
       if (conversationId) {
@@ -85,12 +91,18 @@ export function useBulkActions() {
   // Same method used in context menu, conversationId being passed from there.
   async function onAssignLabels(newLabels, conversationId = null) {
     try {
+      const ids = conversationId || selectedConversations.value;
       await store.dispatch('bulkActions/process', {
         type: 'Conversation',
-        ids: conversationId || selectedConversations.value,
+        ids,
         labels: {
           add: newLabels,
         },
+      });
+      useTrack(BULK_ACTION_EVENTS.LABEL_ASSIGNMENT, {
+        labelCount: newLabels.length,
+        conversationCount: Array.isArray(ids) ? ids.length : 1,
+        action: 'add',
       });
       store.dispatch('bulkActions/clearSelectedConversationIds');
       if (conversationId) {
@@ -148,6 +160,10 @@ export function useBulkActions() {
         fields: {
           team_id: team.id,
         },
+      });
+      useTrack(BULK_ACTION_EVENTS.TEAM_ASSIGNMENT, {
+        teamId: team.id,
+        conversationCount: selectedConversations.value.length,
       });
       store.dispatch('bulkActions/clearSelectedConversationIds');
       useAlert(t('BULK_ACTION.TEAMS.ASSIGN_SUCCESFUL'));
@@ -207,6 +223,12 @@ export function useBulkActions() {
         });
       }
 
+      useTrack(BULK_ACTION_EVENTS.STATUS_UPDATE, {
+        status,
+        conversationCount: conversationIds.length,
+        snoozedUntil: snoozedUntil || null,
+        skippedCount,
+      });
       store.dispatch('bulkActions/clearSelectedConversationIds');
 
       if (skippedCount > 0) {

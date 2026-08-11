@@ -159,6 +159,31 @@ export const SESSION_EVENTS = Object.freeze({
   REVOKED_FROM_PROFILE: 'Revoked an active session',
 });
 
+export const BULK_ACTION_EVENTS = Object.freeze({
+  STATUS_UPDATE: 'bulk_conversation_status_update',
+  AGENT_ASSIGNMENT: 'bulk_conversation_agent_assignment',
+  LABEL_ASSIGNMENT: 'bulk_conversation_label_assignment',
+  TEAM_ASSIGNMENT: 'bulk_conversation_team_assignment',
+  CONTACTS_DELETED: 'bulk_contacts_deleted',
+});
+
+export const SETTINGS_EVENTS = Object.freeze({
+  CONTACTS_EXPORTED: 'contacts_exported',
+  AGENT_INVITED: 'agent_invited',
+  TEAM_CREATED: 'team_created',
+  AUTOMATION_CREATED: 'automation_created',
+  AUTOMATION_UPDATED: 'automation_updated',
+  AUTOMATION_TOGGLED: 'automation_toggled',
+  MACRO_CREATED: 'macro_created',
+  WEBHOOK_CREATED: 'webhook_created',
+  CAPTAIN_ASSISTANT_CREATED: 'captain_assistant_created',
+  MFA_ENABLED: 'mfa_enabled',
+  MFA_DISABLED: 'mfa_disabled',
+  ACCOUNT_SIGNUP: 'account_signup',
+  ACCOUNT_MARKED_FOR_DELETION: 'account_marked_for_deletion',
+  ACCOUNT_DELETION_CANCELLED: 'account_deletion_cancelled',
+});
+
 export const ONBOARDING_EVENTS = Object.freeze({
   ACCOUNT_DETAILS_VISITED: 'Onboarding: Account details visited',
   ACCOUNT_DETAILS_COMPLETED: 'Onboarding: Account details completed',

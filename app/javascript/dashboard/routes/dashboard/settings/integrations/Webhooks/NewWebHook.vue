@@ -2,7 +2,8 @@
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
-import { useAlert } from 'dashboard/composables';
+import { useAlert, useTrack } from 'dashboard/composables';
+import { SETTINGS_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 import { useBranding } from 'shared/composables/useBranding';
 import { copyTextToClipboard } from 'shared/helpers/clipboard';
 import WebhookForm from './WebhookForm.vue';
@@ -26,6 +27,7 @@ const uiFlags = computed(() => store.getters['webhooks/getUIFlags']);
 const onSubmit = async webhook => {
   try {
     const result = await store.dispatch('webhooks/create', { webhook });
+    useTrack(SETTINGS_EVENTS.WEBHOOK_CREATED);
     createdWebhook.value = result;
   } catch (error) {
     const message =

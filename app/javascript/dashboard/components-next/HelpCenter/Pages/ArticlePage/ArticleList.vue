@@ -175,6 +175,10 @@ const handleArticleAction = async (action, { status, id }) => {
         portalSlug,
         articleId: id,
       });
+      useTrack(PORTALS_EVENTS.DELETE_ARTICLE, {
+        articleId: id,
+        portalSlug,
+      });
       useAlert(t('HELP_CENTER.DELETE_ARTICLE.API.SUCCESS_MESSAGE'));
     } else if (action === 'discard-draft') {
       await store.dispatch('articles/discardDraft', {

@@ -73,10 +73,16 @@ export class AnalyticsHelper {
    * @param {Object} [properties={}] - event properties
    */
   track(eventName, properties = {}) {
-    if (!this.analytics) {
-      return;
+    if (this.analytics) {
+      this.analytics.track(eventName, properties);
     }
-    this.analytics.track(eventName, properties);
+    if (typeof window !== 'undefined' && window.pendo) {
+      try {
+        window.pendo.track(eventName, properties);
+      } catch (e) {
+        // Pendo tracking is not mission critical
+      }
+    }
   }
 
   /**

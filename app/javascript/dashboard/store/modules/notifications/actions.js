@@ -1,5 +1,7 @@
 import types from '../../mutation-types';
 import NotificationsAPI from '../../../api/notifications';
+import AnalyticsHelper from '../../../helper/AnalyticsHelper';
+import { INBOX_EVENTS } from '../../../helper/AnalyticsHelper/events';
 
 export const actions = {
   get: async ({ commit }, { page = 1 } = {}) => {
@@ -118,6 +120,7 @@ export const actions = {
       await NotificationsAPI.deleteAll({
         type: 'all',
       });
+      AnalyticsHelper.track(INBOX_EVENTS.DELETE_ALL_NOTIFICATIONS);
       commit(types.DELETE_ALL_NOTIFICATIONS);
       commit(types.SET_NOTIFICATIONS_UI_FLAG, { isDeleting: false });
     } catch (error) {

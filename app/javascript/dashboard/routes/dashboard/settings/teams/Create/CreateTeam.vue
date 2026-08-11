@@ -1,5 +1,7 @@
 <script>
 import { useAlert } from 'dashboard/composables';
+import AnalyticsHelper from 'dashboard/helper/AnalyticsHelper';
+import { SETTINGS_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 import TeamForm from '../TeamForm.vue';
 import router from '../../../../index';
 import PageHeader from '../../SettingsSubPageHeader.vue';
@@ -19,6 +21,9 @@ export default {
       try {
         const team = await this.$store.dispatch('teams/create', {
           ...data,
+        });
+        AnalyticsHelper.track(SETTINGS_EVENTS.TEAM_CREATED, {
+          teamId: team.id,
         });
 
         router.replace({

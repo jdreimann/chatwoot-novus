@@ -2,7 +2,8 @@
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { useUISettings } from 'dashboard/composables/useUISettings';
-import { useAlert } from 'dashboard/composables';
+import { useAlert, useTrack } from 'dashboard/composables';
+import { PORTALS_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 import { useMapGetter, useStore } from 'dashboard/composables/store.js';
 import { useAccount } from 'dashboard/composables/useAccount';
 import PortalSettings from 'dashboard/components-next/HelpCenter/Pages/PortalSettingsPage/PortalSettings.vue';
@@ -87,6 +88,9 @@ const updatePortalSettings = async portalObj => {
       ...portalObj,
       portalSlug: portalSlug || portalObj?.slug,
     });
+    useTrack(PORTALS_EVENTS.UPDATE_PORTAL, {
+      portalSlug: portalObj?.slug || portalSlug,
+    });
 
     // If there is a slug change, this will refresh the route and update the UI settings
     if (portalObj?.slug && portalSlug !== portalObj.slug) {
@@ -107,6 +111,7 @@ const deletePortal = async selectedPortalForDelete => {
   const { slug } = selectedPortalForDelete;
   try {
     await store.dispatch('portals/delete', { portalSlug: slug });
+    useTrack(PORTALS_EVENTS.DELETE_PORTAL, { portalSlug: slug });
     await updateRouteAfterDeletion(slug);
     useAlert(
       t('HELP_CENTER.PORTAL.PORTAL_SETTINGS.DELETE_PORTAL.API.DELETE_SUCCESS')

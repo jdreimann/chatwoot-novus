@@ -1,7 +1,9 @@
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { format, parseISO } from 'date-fns';
+import { useTrack } from 'dashboard/composables';
+import { SESSION_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 
 import Icon from 'dashboard/components-next/icon/Icon.vue';
 import NextButton from 'dashboard/components-next/button/Button.vue';
@@ -18,6 +20,12 @@ const emit = defineEmits(['revoke', 'revokeAll', 'cancel']);
 const { t } = useI18n();
 const revokingId = ref(null);
 const revokingAll = ref(false);
+
+onMounted(() => {
+  useTrack(SESSION_EVENTS.LIMIT_HIT, {
+    sessionCount: props.sessions.length,
+  });
+});
 
 const sortedSessions = computed(() =>
   [...props.sessions].sort(

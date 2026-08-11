@@ -1,5 +1,7 @@
 import { computed } from 'vue';
 import { useStore, useStoreGetters } from 'dashboard/composables/store';
+import { useTrack } from 'dashboard/composables';
+import { LABEL_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 
 /**
  * Composable for managing conversation labels
@@ -75,6 +77,10 @@ export function useConversationLabels() {
   const addLabelToConversation = value => {
     const result = activeLabels.value.map(item => item.title);
     result.push(value.title);
+    useTrack(LABEL_EVENTS.APPLY_LABEL, {
+      labelName: value.title,
+      conversationId: conversationId.value,
+    });
     onUpdateLabels(result);
   };
 

@@ -1,5 +1,6 @@
 <script setup>
-import { useAlert } from 'dashboard/composables';
+import { useAlert, useTrack } from 'dashboard/composables';
+import { SETTINGS_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 import AddAutomationRule from './AddAutomationRule.vue';
 import EditAutomationRule from './EditAutomationRule.vue';
 import BaseSettingsHeader from '../components/BaseSettingsHeader.vue';
@@ -193,6 +194,20 @@ const submitAutomation = async (payload, mode) => {
         ? t('AUTOMATION.EDIT.API.SUCCESS_MESSAGE')
         : t('AUTOMATION.ADD.API.SUCCESS_MESSAGE');
     await store.dispatch(action, payload);
+    if (mode === 'edit') {
+      useTrack(SETTINGS_EVENTS.AUTOMATION_UPDATED, {
+        automationId: payload.id,
+        eventName: payload.event_name,
+        actionCount: payload.actions?.length,
+        conditionCount: payload.conditions?.length,
+      });
+    } else {
+      useTrack(SETTINGS_EVENTS.AUTOMATION_CREATED, {
+        eventName: payload.event_name,
+        actionCount: payload.actions?.length,
+        conditionCount: payload.conditions?.length,
+      });
+    }
     useAlert(successMessage);
     hideAddPopup();
     hideEditPopup();
@@ -229,6 +244,10 @@ const toggleAutomation = async ({ id, name, status }) => {
       await store.dispatch('automations/update', {
         id: id,
         active: !status,
+      });
+      useTrack(SETTINGS_EVENTS.AUTOMATION_TOGGLED, {
+        automationId: id,
+        newStatus: !status,
       });
       const message = status
         ? t('AUTOMATION.TOGGLE.DEACTIVATION_SUCCESFUL')

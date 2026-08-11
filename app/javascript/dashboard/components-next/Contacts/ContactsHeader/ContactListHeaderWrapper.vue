@@ -4,7 +4,10 @@ import { useI18n } from 'vue-i18n';
 import { useStore, useMapGetter } from 'dashboard/composables/store';
 import { useRouter } from 'vue-router';
 import { useAlert, useTrack } from 'dashboard/composables';
-import { CONTACTS_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
+import {
+  CONTACTS_EVENTS,
+  SETTINGS_EVENTS,
+} from 'dashboard/helper/AnalyticsHelper/events';
 import filterQueryGenerator from 'dashboard/helper/filterQueryGenerator';
 import contactFilterItems from 'dashboard/routes/dashboard/contacts/contactFilterItems';
 import {
@@ -71,8 +74,10 @@ const activeSegmentName = computed(() => props.activeSegment?.name);
 const openCreateNewContactDialog = () => {
   createNewContactDialogRef.value?.dialogRef.open();
 };
-const openContactImportDialog = () =>
+const openContactImportDialog = () => {
+  useTrack(CONTACTS_EVENTS.IMPORT_MODAL_OPEN);
   contactImportDialogRef.value?.dialogRef.open();
+};
 const openContactExportDialog = () =>
   contactExportDialogRef.value?.dialogRef.open();
 const openCreateSegmentDialog = () =>
@@ -123,6 +128,9 @@ const onImport = async file => {
 const onExport = async query => {
   try {
     await store.dispatch('contacts/export', query);
+    useTrack(SETTINGS_EVENTS.CONTACTS_EXPORTED, {
+      hasFilters: Boolean(query?.payload),
+    });
     useAlert(
       t('CONTACTS_LAYOUT.HEADER.ACTIONS.EXPORT_CONTACT.SUCCESS_MESSAGE')
     );

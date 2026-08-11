@@ -5,7 +5,8 @@ import { required, minLength, email } from '@vuelidate/validators';
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { useAlert } from 'dashboard/composables';
+import { useAlert, useTrack } from 'dashboard/composables';
+import { SETTINGS_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 import VueHcaptcha from '@hcaptcha/vue3-hcaptcha';
 import FormInput from '../../../../../components/Form/Input.vue';
 import NextButton from 'dashboard/components-next/button/Button.vue';
@@ -77,6 +78,9 @@ const performRegistration = async () => {
   isSignupInProgress.value = true;
   try {
     await register(credentials);
+    useTrack(SETTINGS_EVENTS.ACCOUNT_SIGNUP, {
+      signupMethod: 'email',
+    });
     router.push({
       name: 'auth_verify_email',
       state: { email: credentials.email },

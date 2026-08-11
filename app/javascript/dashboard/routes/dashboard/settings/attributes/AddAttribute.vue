@@ -3,6 +3,8 @@ import { useVuelidate } from '@vuelidate/core';
 import { required, minLength } from '@vuelidate/validators';
 import { mapGetters } from 'vuex';
 import { useAlert } from 'dashboard/composables';
+import AnalyticsHelper from 'dashboard/helper/AnalyticsHelper';
+import { ACCOUNT_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 import { convertToAttributeSlug } from 'dashboard/helper/commons.js';
 import { normalizeRegexPattern } from 'shared/helpers/Validators';
 import { ATTRIBUTE_MODELS, ATTRIBUTE_TYPES } from './constants';
@@ -145,6 +147,11 @@ export default {
           attribute_values: this.attributeListValues,
           regex_pattern: normalizeRegexPattern(this.regexPattern),
           regex_cue: this.regexCue,
+        });
+        AnalyticsHelper.track(ACCOUNT_EVENTS.ADDED_A_CUSTOM_ATTRIBUTE, {
+          attributeModel: this.attributeModel,
+          attributeType: this.attributeType,
+          attributeKey: this.attributeKey,
         });
         this.alertMessage = this.$t('ATTRIBUTES_MGMT.ADD.API.SUCCESS_MESSAGE');
         this.onClose();

@@ -1,7 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useStore } from 'dashboard/composables/store';
-import { useAlert } from 'dashboard/composables';
+import { useAlert, useTrack } from 'dashboard/composables';
+import { SETTINGS_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 import { useI18n } from 'vue-i18n';
 
 import Dialog from 'dashboard/components-next/dialog/Dialog.vue';
@@ -41,6 +42,9 @@ const createAssistant = async assistantDetails => {
       'captainAssistants/create',
       assistantDetails
     );
+    useTrack(SETTINGS_EVENTS.CAPTAIN_ASSISTANT_CREATED, {
+      assistantId: newAssistant?.id,
+    });
     emit('created', newAssistant);
   } catch (error) {
     const errorMessage = error?.message || t(`${i18nKey.value}.ERROR_MESSAGE`);

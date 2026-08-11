@@ -3,7 +3,11 @@ import { onMounted, computed, ref, reactive, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useStore, useMapGetter } from 'dashboard/composables/store';
-import { useAlert } from 'dashboard/composables';
+import { useAlert, useTrack } from 'dashboard/composables';
+import {
+  CONTACTS_EVENTS,
+  BULK_ACTION_EVENTS,
+} from 'dashboard/helper/AnalyticsHelper/events';
 import { debounce } from '@chatwoot/utils';
 import { useUISettings } from 'dashboard/composables/useUISettings';
 import filterQueryGenerator from 'dashboard/helper/filterQueryGenerator';
@@ -265,6 +269,9 @@ const searchContacts = debounce(
       search: value,
       append,
     });
+    if (!append) {
+      useTrack(CONTACTS_EVENTS.SEARCH, { query: value });
+    }
     searchPageNumber.value = page;
   },
   DEBOUNCE_DELAY
@@ -385,6 +392,9 @@ const deleteContacts = async () => {
       ids: selectedContactIds.value,
       action_name: 'delete',
     });
+    useTrack(BULK_ACTION_EVENTS.CONTACTS_DELETED, {
+      contactCount: selectedContactIds.value.length,
+    });
     useAlert(t('CONTACTS_BULK_ACTIONS.DELETE_SUCCESS'));
     clearSelection();
     await fetchContactsBasedOnContext(pageNumber.value);
@@ -398,6 +408,7 @@ const deleteContacts = async () => {
 
 const handleSort = async ({ sort, order }) => {
   Object.assign(sortState, { activeSort: sort, activeOrdering: order });
+  useTrack(CONTACTS_EVENTS.APPLY_SORT, { sort, order });
 
   await updateUISettings({
     contacts_sort_by: buildSortAttr(),

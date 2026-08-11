@@ -4,7 +4,8 @@ import { useI18n } from 'vue-i18n';
 import { useRouter, useRoute } from 'vue-router';
 import { parseBoolean } from '@chatwoot/utils';
 import mfaAPI from 'dashboard/api/mfa';
-import { useAlert } from 'dashboard/composables';
+import { useAlert, useTrack } from 'dashboard/composables';
+import { SETTINGS_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 import { emitter } from 'shared/helpers/mitt';
 import { BUS_EVENTS } from 'shared/constants/busEvents';
 import MfaStatusCard from './MfaStatusCard.vue';
@@ -98,6 +99,7 @@ const completeMfaSetup = () => {
   backupCodesGenerated.value = true;
   showSetup.value = false;
   emitter.emit(BUS_EVENTS.MFA_STATE_CHANGED);
+  useTrack(SETTINGS_EVENTS.MFA_ENABLED);
   useAlert(t('MFA_SETTINGS.SETUP.SUCCESS'));
 };
 
@@ -114,6 +116,7 @@ const disableMfa = async ({ password, otpCode, backupCode }) => {
     backupCodesGenerated.value = false;
     managementActionsRef.value?.resetDisableForm();
     emitter.emit(BUS_EVENTS.MFA_STATE_CHANGED);
+    useTrack(SETTINGS_EVENTS.MFA_DISABLED);
     useAlert(t('MFA_SETTINGS.DISABLE.SUCCESS'));
   } catch (error) {
     useAlert(t('MFA_SETTINGS.DISABLE.ERROR'));

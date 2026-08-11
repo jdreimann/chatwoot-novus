@@ -5,7 +5,8 @@ import { useI18n } from 'vue-i18n';
 import { useStore, useStoreGetters } from 'dashboard/composables/store';
 import MacroForm from './MacroForm.vue';
 import { MACRO_ACTION_TYPES } from './constants';
-import { useAlert } from 'dashboard/composables';
+import { useAlert, useTrack } from 'dashboard/composables';
+import { SETTINGS_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 import actionQueryGenerator from 'dashboard/helper/actionQueryGenerator.js';
 import { useMacros } from 'dashboard/composables/useMacros';
 import { useAdmin } from 'dashboard/composables/useAdmin';
@@ -126,6 +127,11 @@ const saveMacro = async macroData => {
     let serializedMacro = JSON.parse(JSON.stringify(macroData));
     serializedMacro.actions = actionQueryGenerator(serializedMacro.actions);
     await store.dispatch(action, serializedMacro);
+    if (mode.value === 'CREATE') {
+      useTrack(SETTINGS_EVENTS.MACRO_CREATED, {
+        actionCount: serializedMacro.actions?.length,
+      });
+    }
     useAlert(successMessage);
     router.push({ name: 'macros_wrapper' });
   } catch (error) {
