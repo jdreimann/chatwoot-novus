@@ -32,9 +32,12 @@ const formatMessagesForApi = () => {
   });
 };
 
+let playgroundConversationId = crypto.randomUUID();
+
 const resetConversation = () => {
   messages.value = [];
   newMessage.value = '';
+  playgroundConversationId = crypto.randomUUID();
 };
 
 // Watch for assistant ID changes and reset conversation
@@ -58,6 +61,16 @@ const sendMessage = async () => {
   messages.value.push(userMessage);
   const currentMessage = newMessage.value;
   newMessage.value = '';
+  const promptMessageId = crypto.randomUUID();
+
+  if (window.pendo) {
+    window.pendo.trackAgent('prompt', {
+      agentId: '5Tt29_7_FqfWlLggGMrxEtGsQ_U',
+      conversationId: playgroundConversationId,
+      messageId: promptMessageId,
+      content: currentMessage,
+    });
+  }
 
   try {
     isLoading.value = true;
@@ -73,6 +86,15 @@ const sendMessage = async () => {
       agentName: data.agent_name,
       timestamp: new Date().toISOString(),
     });
+
+    if (window.pendo) {
+      window.pendo.trackAgent('agent_response', {
+        agentId: '5Tt29_7_FqfWlLggGMrxEtGsQ_U',
+        conversationId: playgroundConversationId,
+        messageId: `agent_response_${Date.now()}`,
+        content: data.response || '',
+      });
+    }
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Error getting assistant response:', error);

@@ -145,6 +145,8 @@ watch(
           <CopilotAssistantMessage
             v-else-if="item.message_type === 'assistant'"
             :message="item.message"
+            :copilot-message-id="item.id"
+            :copilot-thread-id="item.copilot_thread?.id"
             :is-last-message="index === groupedMessages.length - 1"
             :conversation-inbox-type="conversationInboxType"
           />

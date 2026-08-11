@@ -101,6 +101,7 @@ const handleReset = () => {
 };
 
 const sendMessage = async message => {
+  const promptMessageId = crypto.randomUUID();
   try {
     if (selectedCopilotThreadId.value) {
       await store.dispatch('copilotMessages/create', {
@@ -116,6 +117,14 @@ const sendMessage = async message => {
         message,
       });
       selectedCopilotThreadId.value = response.id;
+    }
+    if (window.pendo) {
+      window.pendo.trackAgent('prompt', {
+        agentId: 'T98-yufl1Vo8p6GnzADO40dAoiI',
+        conversationId: String(selectedCopilotThreadId.value),
+        messageId: promptMessageId,
+        content: message,
+      });
     }
   } catch (error) {
     useAlert(error.message);

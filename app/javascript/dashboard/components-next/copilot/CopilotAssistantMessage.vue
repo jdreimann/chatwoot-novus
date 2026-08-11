@@ -19,6 +19,14 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  copilotMessageId: {
+    type: Number,
+    default: null,
+  },
+  copilotThreadId: {
+    type: Number,
+    default: null,
+  },
   conversationInboxType: {
     type: String,
     required: true,
@@ -52,6 +60,14 @@ const useCopilotResponse = () => {
     emitter.emit(BUS_EVENTS.INSERT_INTO_NORMAL_EDITOR, props.message?.content);
   }
   useTrack(COPILOT_EVENTS.USE_CAPTAIN_RESPONSE);
+  if (window.pendo) {
+    window.pendo.trackAgent('user_reaction', {
+      agentId: 'T98-yufl1Vo8p6GnzADO40dAoiI',
+      conversationId: String(props.copilotThreadId || ''),
+      messageId: String(props.copilotMessageId || ''),
+      content: 'positive',
+    });
+  }
 };
 </script>
 

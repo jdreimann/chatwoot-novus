@@ -336,6 +336,14 @@ class ActionCableConnector extends BaseActionCableConnector {
 
   onCopilotMessageCreated = data => {
     this.app.$store.dispatch('copilotMessages/upsert', data);
+    if (data.message_type === 'assistant' && window.pendo) {
+      window.pendo.trackAgent('agent_response', {
+        agentId: 'T98-yufl1Vo8p6GnzADO40dAoiI',
+        conversationId: String(data.copilot_thread?.id || ''),
+        messageId: String(data.id),
+        content: data.message?.content || '',
+      });
+    }
   };
 
   onEnrichmentCompleted = () => {
