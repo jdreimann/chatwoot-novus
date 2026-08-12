@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useAlert } from 'dashboard/composables';
 import { useStore } from 'dashboard/composables/store';
 import Copilot from 'dashboard/components-next/copilot/Copilot.vue';
@@ -101,6 +101,7 @@ const handleReset = () => {
 };
 
 const sendMessage = async message => {
+  const promptMessageId = `prompt_${Date.now()}`;
   try {
     if (selectedCopilotThreadId.value) {
       await store.dispatch('copilotMessages/create', {
@@ -117,10 +118,44 @@ const sendMessage = async message => {
       });
       selectedCopilotThreadId.value = response.id;
     }
+
+    if (window.pendo) {
+      window.pendo.trackAgent('prompt', {
+        agentId: 'cHxlCP3iLqmQGW7XPf0AHReRfbo',
+        conversationId: String(selectedCopilotThreadId.value),
+        messageId: promptMessageId,
+        content: message,
+      });
+    }
   } catch (error) {
     useAlert(error.message);
   }
 };
+
+const trackedMessageIds = ref(new Set());
+
+watch(
+  messages,
+  newMessages => {
+    if (!window.pendo || !selectedCopilotThreadId.value) return;
+
+    newMessages
+      .filter(
+        m =>
+          m.message_type === 'assistant' && !trackedMessageIds.value.has(m.id)
+      )
+      .forEach(msg => {
+        trackedMessageIds.value.add(msg.id);
+        window.pendo.trackAgent('agent_response', {
+          agentId: 'cHxlCP3iLqmQGW7XPf0AHReRfbo',
+          conversationId: String(selectedCopilotThreadId.value),
+          messageId: String(msg.id),
+          content: msg.message?.content || '',
+        });
+      });
+  },
+  { deep: true }
+);
 
 onMounted(() => {
   if (isEnterprise) {

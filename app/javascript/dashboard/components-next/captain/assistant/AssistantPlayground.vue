@@ -16,6 +16,7 @@ const { t } = useI18n();
 const messages = ref([]);
 const newMessage = ref('');
 const isLoading = ref(false);
+const playgroundSessionId = ref(`playground_${Date.now()}`);
 
 const formatMessagesForApi = () => {
   return messages.value.map(message => {
@@ -35,6 +36,7 @@ const formatMessagesForApi = () => {
 const resetConversation = () => {
   messages.value = [];
   newMessage.value = '';
+  playgroundSessionId.value = `playground_${Date.now()}`;
 };
 
 // Watch for assistant ID changes and reset conversation
@@ -59,6 +61,16 @@ const sendMessage = async () => {
   const currentMessage = newMessage.value;
   newMessage.value = '';
 
+  const promptMessageId = `prompt_${Date.now()}`;
+  if (window.pendo) {
+    window.pendo.trackAgent('prompt', {
+      agentId: 'fvMtBA5Mz1LSggA3KlPetSB6hoU',
+      conversationId: playgroundSessionId.value,
+      messageId: promptMessageId,
+      content: currentMessage,
+    });
+  }
+
   try {
     isLoading.value = true;
     const { data } = await CaptainAssistant.playground({
@@ -73,6 +85,15 @@ const sendMessage = async () => {
       agentName: data.agent_name,
       timestamp: new Date().toISOString(),
     });
+
+    if (window.pendo) {
+      window.pendo.trackAgent('agent_response', {
+        agentId: 'fvMtBA5Mz1LSggA3KlPetSB6hoU',
+        conversationId: playgroundSessionId.value,
+        messageId: `agent_response_${Date.now()}`,
+        content: data.response,
+      });
+    }
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Error getting assistant response:', error);
