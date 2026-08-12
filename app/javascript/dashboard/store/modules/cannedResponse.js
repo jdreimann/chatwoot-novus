@@ -2,6 +2,8 @@ import { throwErrorMessage } from 'dashboard/store/utils/api';
 import * as MutationHelpers from 'shared/helpers/vuex/mutationHelpers';
 import * as types from '../mutation-types';
 import CannedResponseAPI from '../../api/cannedResponse';
+import AnalyticsHelper from '../../helper/AnalyticsHelper';
+import { CANNED_RESPONSE_EVENTS } from '../../helper/AnalyticsHelper/events';
 
 const state = {
   records: [],
@@ -55,6 +57,9 @@ const actions = {
     try {
       const response = await CannedResponseAPI.create(cannedObj);
       commit(types.default.ADD_CANNED, response.data);
+      AnalyticsHelper.track(CANNED_RESPONSE_EVENTS.CREATED, {
+        shortCode: cannedObj.short_code,
+      });
       commit(types.default.SET_CANNED_UI_FLAG, { creatingItem: false });
       return response.data;
     } catch (error) {

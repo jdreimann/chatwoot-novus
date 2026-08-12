@@ -2,6 +2,8 @@ import * as MutationHelpers from 'shared/helpers/vuex/mutationHelpers';
 import types from '../mutation-types';
 import MacrosAPI from '../../api/macros';
 import { throwErrorMessage } from '../utils/api';
+import AnalyticsHelper from '../../helper/AnalyticsHelper';
+import { MACRO_EVENTS } from '../../helper/AnalyticsHelper/events';
 
 export const state = {
   records: [],
@@ -55,6 +57,10 @@ export const actions = {
     try {
       const response = await MacrosAPI.create(macrosObj);
       commit(types.ADD_MACRO, response.data.payload);
+      AnalyticsHelper.track(MACRO_EVENTS.CREATED, {
+        macroName: macrosObj.name,
+        actionCount: macrosObj.actions?.length,
+      });
     } catch (error) {
       throwErrorMessage(error);
     } finally {

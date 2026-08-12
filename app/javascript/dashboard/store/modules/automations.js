@@ -2,6 +2,8 @@ import * as MutationHelpers from 'shared/helpers/vuex/mutationHelpers';
 import types from '../mutation-types';
 import { uploadFile } from 'dashboard/helper/uploadHelper';
 import AutomationAPI from '../../api/automation';
+import AnalyticsHelper from '../../helper/AnalyticsHelper';
+import { AUTOMATION_EVENTS } from '../../helper/AnalyticsHelper/events';
 
 export const state = {
   records: [],
@@ -39,6 +41,12 @@ export const actions = {
     try {
       const response = await AutomationAPI.create(automationObj);
       commit(types.ADD_AUTOMATION, response.data);
+      AnalyticsHelper.track(AUTOMATION_EVENTS.CREATED, {
+        automationName: automationObj.name,
+        eventName: automationObj.event_name,
+        actionCount: automationObj.actions?.length,
+        conditionCount: automationObj.conditions?.length,
+      });
     } catch (error) {
       throw new Error(error);
     } finally {
@@ -61,6 +69,9 @@ export const actions = {
     try {
       await AutomationAPI.delete(id);
       commit(types.DELETE_AUTOMATION, id);
+      AnalyticsHelper.track(AUTOMATION_EVENTS.DELETED, {
+        automationId: id,
+      });
     } catch (error) {
       throw new Error(error);
     } finally {

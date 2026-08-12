@@ -1,6 +1,8 @@
 <script setup>
 import { ref, computed, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useTrack } from 'dashboard/composables';
+import { CONTACTS_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 
 import Button from 'dashboard/components-next/button/Button.vue';
 import SelectMenu from 'dashboard/components-next/selectmenu/SelectMenu.vue';
@@ -84,10 +86,18 @@ const activeOrderingLabel = computed(() => {
 });
 
 const handleSortChange = value => {
+  useTrack(CONTACTS_EVENTS.APPLY_SORT, {
+    sortAttribute: value,
+    sortDirection: props.activeOrdering || 'asc',
+  });
   emit('update:sort', { sort: value, order: props.activeOrdering });
 };
 
 const handleOrderChange = value => {
+  useTrack(CONTACTS_EVENTS.APPLY_SORT, {
+    sortAttribute: props.activeSort,
+    sortDirection: value === '-' ? 'desc' : 'asc',
+  });
   emit('update:sort', { sort: props.activeSort, order: value });
 };
 </script>

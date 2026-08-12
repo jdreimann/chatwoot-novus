@@ -3,6 +3,8 @@ import CompanyAPI from 'dashboard/api/companies';
 import { createStore } from 'dashboard/store/storeFactory';
 import { throwErrorMessage } from 'dashboard/store/utils/api';
 import snakecaseKeys from 'snakecase-keys';
+import AnalyticsHelper from 'dashboard/helper/AnalyticsHelper';
+import { COMPANY_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 
 const createInitialUIFlags = () => ({
   fetchingList: false,
@@ -193,6 +195,9 @@ export const useCompaniesStore = createStore({
         } = await CompanyAPI.create(buildCompanyRequestPayload(companyAttrs));
         const company = camelizeCompany(payload);
         this.upsertCompanyRecord(company);
+        AnalyticsHelper.track(COMPANY_EVENTS.CREATED, {
+          companyName: companyAttrs.name,
+        });
         return company;
       } catch (error) {
         return throwErrorMessage(error);

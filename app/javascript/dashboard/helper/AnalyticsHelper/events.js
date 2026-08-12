@@ -166,3 +166,76 @@ export const ONBOARDING_EVENTS = Object.freeze({
   INBOX_SETUP_COMPLETED: 'Onboarding: Inbox setup completed',
   INBOX_SETUP_SKIPPED: 'Onboarding: Inbox setup skipped',
 });
+
+export const AUTOMATION_EVENTS = Object.freeze({
+  CREATED: 'automation_created',
+  DELETED: 'automation_deleted',
+});
+
+export const TEAM_EVENTS = Object.freeze({
+  CREATED: 'team_created',
+});
+
+export const AGENT_EVENTS = Object.freeze({
+  INVITED: 'agent_invited',
+});
+
+export const BULK_ACTION_EVENTS = Object.freeze({
+  EXECUTED: 'bulk_action_executed',
+});
+
+export const CONVERSATION_STATUS_EVENTS = Object.freeze({
+  CHANGED: 'conversation_status_changed',
+  DELETED: 'conversation_deleted',
+  EMAIL_TRANSCRIPT_SENT: 'email_transcript_sent',
+});
+
+export const CONTACT_EXPORT_EVENTS = Object.freeze({
+  EXPORTED: 'contact_exported',
+});
+
+export const DATA_IMPORT_EVENTS = Object.freeze({
+  CREATED: 'data_import_created',
+});
+
+export const INTEGRATION_EVENTS = Object.freeze({
+  CONNECTED: 'integration_connected',
+  DISCONNECTED: 'integration_disconnected',
+});
+
+export const BILLING_EVENTS = Object.freeze({
+  CREDITS_PURCHASED: 'credits_purchased',
+  CURRENCY_SELECTED: 'billing_currency_selected',
+});
+
+export const MACRO_EVENTS = Object.freeze({
+  CREATED: 'macro_created',
+});
+
+export const WEBHOOK_EVENTS = Object.freeze({
+  CREATED: 'webhook_created',
+});
+
+export const VOICE_EVENTS = Object.freeze({
+  CALL_INITIATED: 'voice_call_initiated',
+});
+
+export const SIGNUP_EVENTS = Object.freeze({
+  COMPLETED: 'user_signup_completed',
+});
+
+export const COMPANY_EVENTS = Object.freeze({
+  CREATED: 'company_created',
+});
+
+export const CUSTOM_VIEW_EVENTS = Object.freeze({
+  CREATED: 'custom_view_created',
+});
+
+export const CANNED_RESPONSE_EVENTS = Object.freeze({
+  CREATED: 'canned_response_created',
+});
+
+export const HELP_CENTER_EVENTS = Object.freeze({
+  BULK_TRANSLATED: 'help_center_articles_bulk_translated',
+});

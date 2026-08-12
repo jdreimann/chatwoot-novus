@@ -2,6 +2,8 @@ import * as MutationHelpers from 'shared/helpers/vuex/mutationHelpers';
 import types from '../mutation-types';
 import AttributeAPI from '../../api/attributes';
 import camelcaseKeys from 'camelcase-keys';
+import AnalyticsHelper from '../../helper/AnalyticsHelper';
+import { ACCOUNT_EVENTS } from '../../helper/AnalyticsHelper/events';
 
 export const state = {
   records: [],
@@ -59,6 +61,11 @@ export const actions = {
     try {
       const response = await AttributeAPI.create(attributeObj);
       commit(types.ADD_CUSTOM_ATTRIBUTE, response.data);
+      AnalyticsHelper.track(ACCOUNT_EVENTS.ADDED_A_CUSTOM_ATTRIBUTE, {
+        attributeModel: attributeObj.attribute_model,
+        attributeType: attributeObj.attribute_display_type,
+        attributeKey: attributeObj.attribute_display_name,
+      });
     } catch (error) {
       const errorMessage = error?.response?.data?.message;
       throw new Error(errorMessage);

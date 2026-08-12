@@ -1,5 +1,7 @@
 import types from '../mutation-types';
 import BulkActionsAPI from '../../api/bulkActions';
+import AnalyticsHelper from '../../helper/AnalyticsHelper';
+import { BULK_ACTION_EVENTS } from '../../helper/AnalyticsHelper/events';
 
 export const state = {
   selectedConversationIds: [],
@@ -22,6 +24,10 @@ export const actions = {
     commit(types.SET_BULK_ACTIONS_FLAG, { isUpdating: true });
     try {
       await BulkActionsAPI.create(payload);
+      AnalyticsHelper.track(BULK_ACTION_EVENTS.EXECUTED, {
+        actionType: payload.type,
+        conversationCount: payload.ids?.length,
+      });
     } catch (error) {
       throw new Error(error);
     } finally {

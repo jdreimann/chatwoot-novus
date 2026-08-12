@@ -3,6 +3,8 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useToggle } from '@vueuse/core';
 import { useStoreGetters, useMapGetter } from 'dashboard/composables/store';
+import { useTrack } from 'dashboard/composables';
+import { CAMPAIGNS_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 
 import Spinner from 'dashboard/components-next/spinner/Spinner.vue';
 import CampaignLayout from 'dashboard/components-next/Campaigns/CampaignLayout.vue';
@@ -16,6 +18,13 @@ const getters = useStoreGetters();
 
 const selectedCampaign = ref(null);
 const [showWhatsAppCampaignDialog, toggleWhatsAppCampaignDialog] = useToggle();
+
+const openWhatsAppCampaignDialog = () => {
+  useTrack(CAMPAIGNS_EVENTS.OPEN_NEW_CAMPAIGN_MODAL, {
+    campaignType: 'whatsapp',
+  });
+  toggleWhatsAppCampaignDialog();
+};
 
 const uiFlags = useMapGetter('campaigns/getUIFlags');
 const isFetchingCampaigns = computed(() => uiFlags.value.isFetching);
@@ -40,7 +49,7 @@ const handleDelete = campaign => {
   <CampaignLayout
     :header-title="t('CAMPAIGN.WHATSAPP.HEADER_TITLE')"
     :button-label="t('CAMPAIGN.WHATSAPP.NEW_CAMPAIGN')"
-    @click="toggleWhatsAppCampaignDialog()"
+    @click="openWhatsAppCampaignDialog"
     @close="toggleWhatsAppCampaignDialog(false)"
   >
     <template #action>

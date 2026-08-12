@@ -71,8 +71,10 @@ const activeSegmentName = computed(() => props.activeSegment?.name);
 const openCreateNewContactDialog = () => {
   createNewContactDialogRef.value?.dialogRef.open();
 };
-const openContactImportDialog = () =>
+const openContactImportDialog = () => {
+  useTrack(CONTACTS_EVENTS.IMPORT_MODAL_OPEN);
   contactImportDialogRef.value?.dialogRef.open();
+};
 const openContactExportDialog = () =>
   contactExportDialogRef.value?.dialogRef.open();
 const openCreateSegmentDialog = () =>

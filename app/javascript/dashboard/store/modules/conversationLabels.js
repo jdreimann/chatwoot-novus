@@ -1,5 +1,7 @@
 import * as types from '../mutation-types';
 import ConversationAPI from '../../api/conversations';
+import AnalyticsHelper from '../../helper/AnalyticsHelper';
+import { LABEL_EVENTS } from '../../helper/AnalyticsHelper/events';
 
 const state = {
   records: {},
@@ -51,6 +53,9 @@ export const actions = {
       commit(types.default.SET_CONVERSATION_LABELS, {
         id: conversationId,
         data: response.data.payload,
+      });
+      AnalyticsHelper.track(LABEL_EVENTS.APPLY_LABEL, {
+        conversationId,
       });
       commit(types.default.SET_CONVERSATION_LABELS_UI_FLAG, {
         isUpdating: false,

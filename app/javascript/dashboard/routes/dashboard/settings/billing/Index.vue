@@ -17,6 +17,8 @@ import SettingsLayout from '../SettingsLayout.vue';
 import ButtonV4 from 'next/button/Button.vue';
 import { getCurrencyConfig } from 'dashboard/constants/billing';
 import { useI18n } from 'vue-i18n';
+import { useTrack } from 'dashboard/composables';
+import { BILLING_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 
 const router = useRouter();
 const { currentAccount, isOnChatwootCloud } = useAccount();
@@ -139,6 +141,9 @@ const handleBillingPageLogic = async () => {
 
 const onSelectCurrency = async code => {
   await store.dispatch('accounts/selectBillingCurrency', code);
+  useTrack(BILLING_EVENTS.CURRENCY_SELECTED, {
+    currencyCode: code,
+  });
   currencySelectionRequired.value = false;
   // Currency stored and customer creation kicked off — resume the standard wait flow.
   await handleBillingPageLogic();

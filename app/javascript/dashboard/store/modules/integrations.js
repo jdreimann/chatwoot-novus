@@ -3,6 +3,8 @@ import * as MutationHelpers from 'shared/helpers/vuex/mutationHelpers';
 import * as types from '../mutation-types';
 import IntegrationsAPI from '../../api/integrations';
 import { throwErrorMessage } from 'dashboard/store/utils/api';
+import AnalyticsHelper from '../../helper/AnalyticsHelper';
+import { INTEGRATION_EVENTS } from '../../helper/AnalyticsHelper/events';
 
 const state = {
   records: [],
@@ -53,6 +55,9 @@ export const actions = {
     try {
       const response = await IntegrationsAPI.connectSlack(code);
       commit(types.default.ADD_INTEGRATION, response.data);
+      AnalyticsHelper.track(INTEGRATION_EVENTS.CONNECTED, {
+        integrationType: 'slack',
+      });
     } catch (error) {
       throwErrorMessage(error);
     } finally {
@@ -96,6 +101,9 @@ export const actions = {
       commit(types.default.DELETE_INTEGRATION, {
         id: integrationId,
         enabled: false,
+      });
+      AnalyticsHelper.track(INTEGRATION_EVENTS.DISCONNECTED, {
+        integrationId,
       });
       commit(types.default.SET_INTEGRATIONS_UI_FLAG, { isDeleting: false });
     } catch (error) {
