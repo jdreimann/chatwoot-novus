@@ -23,6 +23,7 @@ import * as Sentry from '@sentry/vue';
 import {
   initializeAnalyticsEvents,
   initializeChatwootEvents,
+  initializePendoEvents,
 } from 'dashboard/helper/scriptHelpers.js';
 import FluentIcon from 'shared/components/FluentIcon/DashboardIcon.vue';
 import VueDOMPurifyHTML from 'vue-dompurify-html';
@@ -115,6 +116,7 @@ window.axios = createAxios(axios);
 
 initializeChatwootEvents();
 initializeAnalyticsEvents();
+initializePendoEvents();
 initalizeRouter();
 
 window.onload = () => {

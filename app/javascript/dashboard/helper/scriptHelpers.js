@@ -7,6 +7,44 @@ import AnalyticsHelper from './AnalyticsHelper';
 import DashboardAudioNotificationHelper from './AudioAlerts/DashboardAudioNotificationHelper';
 import { emitter } from 'shared/helpers/mitt';
 
+export const initializePendoEvents = () => {
+  window.pendo.initialize({
+    visitor: { id: '' },
+  });
+
+  emitter.on(ANALYTICS_IDENTITY, ({ user }) => {
+    const { accounts = [], account_id: accountId } = user;
+    const [currentAccount] = accounts.filter(
+      account => account.id === accountId
+    );
+
+    window.pendo.identify({
+      visitor: {
+        id: user.id,
+        email: user.email,
+        full_name: user.name,
+        display_name: user.display_name,
+        provider: user.provider,
+        availability: currentAccount?.availability,
+        created_at: user.created_at,
+        role: currentAccount?.role,
+        account_id: user.account_id,
+      },
+      account: {
+        id: currentAccount?.id,
+        name: currentAccount?.name,
+        status: currentAccount?.status,
+      },
+    });
+  });
+
+  emitter.on(CHATWOOT_RESET, () => {
+    if (window.pendo && window.pendo.clearSession) {
+      window.pendo.clearSession();
+    }
+  });
+};
+
 export const initializeAnalyticsEvents = () => {
   AnalyticsHelper.init();
   emitter.on(ANALYTICS_IDENTITY, ({ user }) => {
