@@ -44,6 +44,7 @@ export default {
       });
     },
     deleteAll() {
+      useTrack(INBOX_EVENTS.DELETE_ALL_NOTIFICATIONS);
       this.$store.dispatch('notifications/deleteAll').then(() => {
         useAlert(this.$t('INBOX.ALERTS.DELETE_ALL'));
       });

@@ -1,6 +1,8 @@
 import PortalAPI from 'dashboard/api/helpCenter/portals';
 import { throwErrorMessage } from 'dashboard/store/utils/api';
 import { types } from './mutations';
+import AnalyticsHelper from 'dashboard/helper/AnalyticsHelper';
+import { PORTALS_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 const portalAPIs = new PortalAPI();
 
 export const actions = {
@@ -61,6 +63,7 @@ export const actions = {
         portalObj,
       });
       commit(types.UPDATE_PORTAL_ENTRY, data);
+      AnalyticsHelper.track(PORTALS_EVENTS.UPDATE_PORTAL, { portalSlug });
     } catch (error) {
       throwErrorMessage(error);
     } finally {
@@ -80,6 +83,7 @@ export const actions = {
       await portalAPIs.delete(portalSlug);
       commit(types.REMOVE_PORTAL_ENTRY, portalSlug);
       commit(types.REMOVE_PORTAL_ID, portalSlug);
+      AnalyticsHelper.track(PORTALS_EVENTS.DELETE_PORTAL, { portalSlug });
     } catch (error) {
       throwErrorMessage(error);
     } finally {

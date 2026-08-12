@@ -6,7 +6,11 @@ import snakecaseKeys from 'snakecase-keys';
 import AccountActionsAPI from '../../../api/accountActions';
 import ContactAPI from '../../../api/contacts';
 import AnalyticsHelper from '../../../helper/AnalyticsHelper';
-import { CONTACTS_EVENTS } from '../../../helper/AnalyticsHelper/events';
+import {
+  CONTACTS_EVENTS,
+  CONTACT_EXPORT_EVENTS,
+  VOICE_EVENTS,
+} from '../../../helper/AnalyticsHelper/events';
 import types from '../../mutation-types';
 
 const buildContactFormData = contactParams => {
@@ -193,7 +197,10 @@ export const actions = {
     commit(types.SET_CONTACT_UI_FLAG, { isExporting: true });
     try {
       await ContactAPI.exportContacts({ payload, label });
-
+      AnalyticsHelper.track(CONTACT_EXPORT_EVENTS.EXPORTED, {
+        hasPayloadFilter: Boolean(payload),
+        label: label || '',
+      });
       commit(types.SET_CONTACT_UI_FLAG, { isExporting: false });
     } catch (error) {
       commit(types.SET_CONTACT_UI_FLAG, { isExporting: false });
@@ -337,6 +344,11 @@ export const actions = {
         inboxId,
         conversationId
       );
+      AnalyticsHelper.track(VOICE_EVENTS.CALL_INITIATED, {
+        contactId,
+        inboxId,
+        conversationId,
+      });
       commit(types.SET_CONTACT_UI_FLAG, { isInitiatingCall: false });
       return response.data;
     } catch (error) {

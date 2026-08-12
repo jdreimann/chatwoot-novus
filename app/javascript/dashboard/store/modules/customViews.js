@@ -2,6 +2,8 @@ import * as MutationHelpers from 'shared/helpers/vuex/mutationHelpers';
 import types from '../mutation-types';
 import CustomViewsAPI from '../../api/customViews';
 import { FEATURE_FLAGS } from 'dashboard/featureFlags';
+import AnalyticsHelper from '../../helper/AnalyticsHelper';
+import { CUSTOM_VIEW_EVENTS } from '../../helper/AnalyticsHelper/events';
 
 const VIEW_TYPES = {
   CONVERSATION: 'conversation',
@@ -119,6 +121,9 @@ export const actions = {
       const filterType = FILTER_KEYS[obj.filter_type];
       commit(types.ADD_CUSTOM_VIEW, {
         data: response.data,
+        filterType,
+      });
+      AnalyticsHelper.track(CUSTOM_VIEW_EVENTS.CREATED, {
         filterType,
       });
       refreshConversationUnreadCounts({ dispatch, rootGetters }, filterType);

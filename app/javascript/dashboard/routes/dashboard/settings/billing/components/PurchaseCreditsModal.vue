@@ -1,7 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useAlert } from 'dashboard/composables';
+import { useAlert, useTrack } from 'dashboard/composables';
+import { BILLING_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 import Dialog from 'dashboard/components-next/dialog/Dialog.vue';
 import Button from 'dashboard/components-next/button/Button.vue';
 import Spinner from 'dashboard/components-next/spinner/Spinner.vue';
@@ -124,6 +125,9 @@ const handlePurchase = async () => {
 
     close();
     emit('success', response.data);
+    useTrack(BILLING_EVENTS.CREDITS_PURCHASED, {
+      creditsAmount: selectedOption.value.credits,
+    });
     useAlert(
       t('BILLING_SETTINGS.TOPUP.PURCHASE_SUCCESS', {
         credits: response.data.credits,

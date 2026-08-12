@@ -1,6 +1,8 @@
 import * as MutationHelpers from 'shared/helpers/vuex/mutationHelpers';
 import * as types from '../mutation-types';
 import AgentAPI from '../../api/agents';
+import AnalyticsHelper from '../../helper/AnalyticsHelper';
+import { AGENT_EVENTS } from '../../helper/AnalyticsHelper/events';
 
 export const state = {
   records: [],
@@ -56,6 +58,9 @@ export const actions = {
     try {
       const response = await AgentAPI.create(agentInfo);
       commit(types.default.ADD_AGENT, response.data);
+      AnalyticsHelper.track(AGENT_EVENTS.INVITED, {
+        agentRole: agentInfo.role,
+      });
       commit(types.default.SET_AGENT_CREATING_STATUS, false);
     } catch (error) {
       commit(types.default.SET_AGENT_CREATING_STATUS, false);

@@ -7,6 +7,8 @@ import {
   DELETE_TEAM,
 } from './types';
 import TeamsAPI from '../../../api/teams';
+import AnalyticsHelper from '../../../helper/AnalyticsHelper';
+import { TEAM_EVENTS } from '../../../helper/AnalyticsHelper/events';
 
 export const actions = {
   create: async ({ commit }, teamInfo) => {
@@ -15,6 +17,9 @@ export const actions = {
       const response = await TeamsAPI.create(teamInfo);
       const team = response.data;
       commit(SET_TEAM_ITEM, team);
+      AnalyticsHelper.track(TEAM_EVENTS.CREATED, {
+        teamName: teamInfo.name,
+      });
       return team;
     } catch (error) {
       throw new Error(error);

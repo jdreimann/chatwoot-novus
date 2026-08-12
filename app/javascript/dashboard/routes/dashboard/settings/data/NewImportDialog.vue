@@ -1,7 +1,8 @@
 <script setup>
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useAlert } from 'dashboard/composables';
+import { useAlert, useTrack } from 'dashboard/composables';
+import { DATA_IMPORT_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 
 import Dialog from 'dashboard/components-next/dialog/Dialog.vue';
 import Checkbox from 'dashboard/components-next/checkbox/Checkbox.vue';
@@ -124,6 +125,11 @@ const createImport = async () => {
     const response = await DataImportsAPI.create({
       ...validationPayload(),
       name: importName.value.trim() || defaultImportName.value,
+    });
+    useTrack(DATA_IMPORT_EVENTS.CREATED, {
+      sourceProvider: sourceProvider.value,
+      importTypes: selectedImportTypes.value.join(','),
+      importName: importName.value.trim() || defaultImportName.value,
     });
     useAlert(t('DATA_IMPORTS.ALERTS.IMPORT_STARTED'));
     emit('created', response.data.id);

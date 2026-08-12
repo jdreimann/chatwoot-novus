@@ -1,6 +1,8 @@
 import * as MutationHelpers from 'shared/helpers/vuex/mutationHelpers';
 import * as types from '../mutation-types';
 import webHookAPI from '../../api/webhooks';
+import AnalyticsHelper from '../../helper/AnalyticsHelper';
+import { WEBHOOK_EVENTS } from '../../helper/AnalyticsHelper/events';
 
 const state = {
   records: [],
@@ -41,6 +43,7 @@ export const actions = {
         payload: { webhook },
       } = response.data;
       commit(types.default.ADD_WEBHOOK, webhook);
+      AnalyticsHelper.track(WEBHOOK_EVENTS.CREATED);
       commit(types.default.SET_WEBHOOK_UI_FLAG, { creatingItem: false });
       return webhook;
     } catch (error) {

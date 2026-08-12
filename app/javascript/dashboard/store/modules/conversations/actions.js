@@ -18,6 +18,8 @@ import {
   handleVoiceCallUpdated,
   syncConversationCallVisibility,
 } from 'dashboard/helper/voice';
+import AnalyticsHelper from 'dashboard/helper/AnalyticsHelper';
+import { CONVERSATION_STATUS_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 
 export const hasMessageFailedWithExternalError = pendingMessage => {
   // This helper is used to check if the message has failed with an external error.
@@ -286,6 +288,11 @@ const actions = {
         status: updatedStatus,
         snoozedUntil: updatedSnoozedUntil,
       });
+      AnalyticsHelper.track(CONVERSATION_STATUS_EVENTS.CHANGED, {
+        conversationId,
+        status: updatedStatus,
+        hasSnoozedUntil: Boolean(snoozedUntil),
+      });
     } catch (error) {
       // Handle error
     }
@@ -373,6 +380,9 @@ const actions = {
       await ConversationApi.delete(conversationId);
       commit(types.DELETE_CONVERSATION, conversationId);
       dispatch('conversationStats/get', {}, { root: true });
+      AnalyticsHelper.track(CONVERSATION_STATUS_EVENTS.DELETED, {
+        conversationId,
+      });
     } catch (error) {
       throw new Error(error);
     }
@@ -479,6 +489,9 @@ const actions = {
 
   sendEmailTranscript: async (_, { conversationId, email }) => {
     await ConversationApi.sendEmailTranscript({ conversationId, email });
+    AnalyticsHelper.track(CONVERSATION_STATUS_EVENTS.EMAIL_TRANSCRIPT_SENT, {
+      conversationId,
+    });
   },
 
   updateCustomAttributes: async (

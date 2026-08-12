@@ -3,6 +3,8 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useToggle } from '@vueuse/core';
 import { useStoreGetters, useMapGetter } from 'dashboard/composables/store';
+import { useTrack } from 'dashboard/composables';
+import { CAMPAIGNS_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 
 import Spinner from 'dashboard/components-next/spinner/Spinner.vue';
 import CampaignLayout from 'dashboard/components-next/Campaigns/CampaignLayout.vue';
@@ -23,6 +25,13 @@ const uiFlags = useMapGetter('campaigns/getUIFlags');
 const isFetchingCampaigns = computed(() => uiFlags.value.isFetching);
 
 const [showLiveChatCampaignDialog, toggleLiveChatCampaignDialog] = useToggle();
+
+const openLiveChatCampaignDialog = () => {
+  useTrack(CAMPAIGNS_EVENTS.OPEN_NEW_CAMPAIGN_MODAL, {
+    campaignType: 'live_chat',
+  });
+  toggleLiveChatCampaignDialog();
+};
 
 const liveChatCampaigns = computed(
   () => getters['campaigns/getLiveChatCampaigns'].value
@@ -46,7 +55,7 @@ const handleDelete = campaign => {
   <CampaignLayout
     :header-title="t('CAMPAIGN.LIVE_CHAT.HEADER_TITLE')"
     :button-label="t('CAMPAIGN.LIVE_CHAT.NEW_CAMPAIGN')"
-    @click="toggleLiveChatCampaignDialog()"
+    @click="openLiveChatCampaignDialog"
     @close="toggleLiveChatCampaignDialog(false)"
   >
     <template #action>

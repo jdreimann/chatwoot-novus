@@ -2,6 +2,11 @@ import articlesAPI from 'dashboard/api/helpCenter/articles';
 import { uploadExternalImage, uploadFile } from 'dashboard/helper/uploadHelper';
 import { throwErrorMessage } from 'dashboard/store/utils/api';
 import camelcaseKeys from 'camelcase-keys';
+import AnalyticsHelper from 'dashboard/helper/AnalyticsHelper';
+import {
+  PORTALS_EVENTS,
+  HELP_CENTER_EVENTS,
+} from 'dashboard/helper/AnalyticsHelper/events';
 
 import types from '../../mutation-types';
 export const actions = {
@@ -148,6 +153,10 @@ export const actions = {
       await articlesAPI.deleteArticle({ portalSlug, articleId });
       commit(types.REMOVE_ARTICLE, articleId);
       commit(types.REMOVE_ARTICLE_ID, articleId);
+      AnalyticsHelper.track(PORTALS_EVENTS.DELETE_ARTICLE, {
+        articleId,
+        portalSlug,
+      });
       return articleId;
     } catch (error) {
       return throwErrorMessage(error);
@@ -205,6 +214,12 @@ export const actions = {
       articleIds,
       locale,
       categoryId,
+      force,
+    });
+    AnalyticsHelper.track(HELP_CENTER_EVENTS.BULK_TRANSLATED, {
+      portalSlug,
+      locale,
+      articleCount: articleIds?.length,
       force,
     });
     return data;

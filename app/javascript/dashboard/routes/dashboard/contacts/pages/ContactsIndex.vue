@@ -3,7 +3,8 @@ import { onMounted, computed, ref, reactive, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useStore, useMapGetter } from 'dashboard/composables/store';
-import { useAlert } from 'dashboard/composables';
+import { useAlert, useTrack } from 'dashboard/composables';
+import { CONTACTS_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 import { debounce } from '@chatwoot/utils';
 import { useUISettings } from 'dashboard/composables/useUISettings';
 import filterQueryGenerator from 'dashboard/helper/filterQueryGenerator';
@@ -260,6 +261,7 @@ const searchContacts = debounce(
     }
 
     updatePageParam(page, value);
+    useTrack(CONTACTS_EVENTS.SEARCH);
     await store.dispatch('contacts/search', {
       ...getCommonFetchParams(page),
       search: value,

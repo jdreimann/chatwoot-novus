@@ -42,6 +42,11 @@ const sendMessage = message => {
   useTrack(COPILOT_EVENTS.SEND_MESSAGE);
 };
 
+const sendSuggestedMessage = message => {
+  emit('sendMessage', message);
+  useTrack(COPILOT_EVENTS.SEND_SUGGESTED);
+};
+
 const chatContainer = ref(null);
 
 const scrollToBottom = async () => {
@@ -160,7 +165,7 @@ watch(
       <CopilotEmptyState
         v-else
         :has-assistants="hasAssistants"
-        @use-suggestion="sendMessage"
+        @use-suggestion="sendSuggestedMessage"
       />
     </div>
 

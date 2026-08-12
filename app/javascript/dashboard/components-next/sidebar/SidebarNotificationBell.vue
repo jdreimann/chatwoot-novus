@@ -2,6 +2,8 @@
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useMapGetter } from 'dashboard/composables/store';
+import { useTrack } from 'dashboard/composables';
+import { ACCOUNT_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 
 const emit = defineEmits(['openNotificationPanel']);
 
@@ -19,6 +21,9 @@ const unreadCount = computed(() => {
 
 function openNotificationPanel() {
   if (route.name !== 'notifications_index') {
+    useTrack(ACCOUNT_EVENTS.OPENED_NOTIFICATIONS, {
+      unreadCount: notificationMetadata.value.unreadCount || 0,
+    });
     emit('openNotificationPanel');
   }
 }
